@@ -480,4 +480,100 @@ public final class Constants {
 		 */
 		public static final double TOLERANCE = 5;
 	}
+
+	/**
+	 * Constants used by the {@link frc.robot.subsystems.mechanisms.Head}'s intake.
+	 */
+	public static class IntakeConstants {
+		/**
+		 * The CAN ID for the intake motor.
+		 */
+		// TODO: Update
+		public static final int MOTOR_ID = 21;
+
+		/**
+		 * The DIO pin for the beam break that senses when a note has entered the intake.
+		 */
+		public static final int NOTE_SENSOR_DIO = 9;
+		/**
+		 * The DIO pin for the beam break that senses when a note is in the position to shoot.
+		 */
+		public static final int NOTE_ALIGNMENT_SENSOR_DIO = 6;
+
+		/**
+		 * Motor current limit in amps.
+		 */
+		public static final int CURRENT_LIMIT = 40;
+
+		/**
+		 * The speed at which the intake spins to intake notes.
+		 */
+		public static final double INTAKE_SPEED = 0.75; // 0.95
+		/**
+		 * The speed at which the intake spins to align notes for shooting.
+		 */
+		public static final double ALIGMNMENT_SPEED = 0.2; // 0.08
+		/**
+		 * The speed at which the intake spins to outtake notes.
+		 */
+		public static final double OUTTAKE_SPEED = -0.25;
+		/**
+		 * The speed at which the intake spins to feed notes into the shooter.
+		 */
+		public static final double FEEDER_SPEED = 0.25; // What speed should a note be fed into the shooter at?
+	}
+
+	/**
+	 * Constants used by the {@link frc.robot.subsystems.mechanisms.Head}'s shooter.
+	 */
+	public static class ShooterConstants {
+		/**
+		 * CAN ID for the bottom shooter motor.
+		 */
+		// TODO: Update
+		public static final int MOTOR_ID_BOTTOM = 23;
+		/**
+		 * CAN ID for the top shooter motor.
+		 */
+		// TODO: Update
+		public static final int MOTOR_ID_TOP = 25;
+
+		/**
+		 * Motor current limit in amps.
+		 */
+		public static final int CURRENT_LIMIT = 20;
+
+		// TODO: Tune these
+		/**
+		 * Shooter kP.
+		 */
+		public static final double KP = 0.00026;
+		/**
+		 * Shooter kI.
+		 */
+		public static final double KI = 0;
+		/**
+		 * Shooter kD.
+		 */
+		public static final double KD = 0.0;
+		/**
+		 * Shooter kF.
+		 */
+		public static final double KF = 0.004;
+		/**
+		 * Shooter kMinOutput.
+		 */
+		public static final double KMIN_OUTPUT = -1;
+		/**
+		 * Shooter kMaxOutput.
+		 */
+		public static final double KMAX_OUTPUT = 1;
+
+		// TODO: Put a real value here
+		/**
+		 * How close does the shooter have to be to its target velocity before it's considered to be at
+		 * speed?
+		 */
+		public static final double VELOCITY_TOLERANCE = 0;
+	}
 }
