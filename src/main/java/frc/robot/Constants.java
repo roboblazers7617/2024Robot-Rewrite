@@ -284,4 +284,96 @@ public final class Constants {
 		 */
 		public static final AprilTagFieldLayout FIELD_LAYOUT = AprilTagFieldLayout.loadField(AprilTagFields.k2025ReefscapeAndyMark);
 	}
+
+	/**
+	 * Constants used to configure the {@link frc.robot.subsystems.mechanisms.arm.Elevator}.
+	 */
+	public static class ElevatorConstants {
+		// TODO: Update CAN IDs
+		/**
+		 * CAN ID for the right elevator motor.
+		 */
+		public static final int RIGHT_MOTOR_ID = 22;
+		/**
+		 * CAN ID for the left elevator motor.
+		 */
+		public static final int LEFT_MOTOR_ID = 52;
+
+		// TODO: Tune PID constants
+		/**
+		 * Elevator kP.
+		 */
+		public static final double KP = 1.35;
+		/**
+		 * Elevator kI.
+		 */
+		public static final double KI = 0.0;
+		/**
+		 * Elevator kD.
+		 */
+		public static final double KD = 1.0;
+		/**
+		 * Elevator kS.
+		 */
+		public static final double KS = 0.35;
+		/**
+		 * Elevator kG.
+		 */
+		public static final double KG = 0.25; // 0.14
+		/**
+		 * Elevator kV.
+		 */
+		public static final double KV = 6.5;// 6.9
+
+		/**
+		 * Elevator kMinOutput as a percentage.
+		 */
+		public static final double KMIN_OUTPUT = -1.0;
+		/**
+		 * Elevator kMaxOutput as a percentage.
+		 */
+		public static final double KMAX_OUTPUT = 1.0;
+		/**
+		 * Maximum velocity in m/s.
+		 */
+		// TODO: Update with accurate number. Is the elevator really going to travel 3 feet in one second?
+		// Use reca.lc
+		public static final double MAX_VELOCITY = 2;
+		/**
+		 * Maximum acceleration in m/s^2.
+		 */
+		// TODO: Update with accurate number Use reca.lc
+		public static final double MAX_ACCELERATION = 2.5;
+
+		/**
+		 * Minimum position in meters.
+		 */
+		public static final double MIN_POSITION = 0.0;
+		/**
+		 * Maximum position in meters.
+		 */
+		// TODO: Update with accurate number
+		public static final double MAX_POSITION = 1.44;
+		/**
+		 * Conversion factor from rotation to meters. 3.81cm diameter spool, 16:1 gear ratio
+		 */
+		// TODO: Update with accurate number
+		public static final double POSITION_CONVERSION_FACTOR = (1 / .2845) / 200;
+		/**
+		 * Conversion factor from rotation to meters per second.
+		 */
+		public static final double VELOCITY_CONVERSION_FACTOR = POSITION_CONVERSION_FACTOR / 60;
+		/**
+		 * Zero offset, meters.
+		 */
+		public static final double ZERO_OFFSET = 0;
+		/**
+		 * Current limit in amps.
+		 */
+		public static final int CURRENT_LIMIT = 40;
+		/**
+		 * Tolerance for the target to be considered reached in meters.
+		 */
+		public static final double TOLERANCE = .02;
+	}
 }
