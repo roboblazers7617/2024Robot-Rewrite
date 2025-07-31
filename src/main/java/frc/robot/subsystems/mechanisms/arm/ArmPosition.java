@@ -3,6 +3,9 @@ package frc.robot.subsystems.mechanisms.arm;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.Distance;
 
+/**
+ * Class that represents a position of the Arm, including both Elevator and Pivot positions.
+ */
 public class ArmPosition {
 	/**
 	 * The elevator position, as a distance from the fully retracted position.
