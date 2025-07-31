@@ -94,6 +94,7 @@ public class Robot extends TimedRobot {
 	 */
 	@Override
 	public void autonomousInit() {
+		robotContainer.init();
 		robotContainer.autoInit();
 
 		autonomousCommand = robotContainer.getAutonomousCommand();
@@ -112,6 +113,7 @@ public class Robot extends TimedRobot {
 
 	@Override
 	public void teleopInit() {
+		robotContainer.init();
 		robotContainer.teleopInit();
 
 		// This makes sure that the autonomous stops running when
@@ -131,6 +133,8 @@ public class Robot extends TimedRobot {
 
 	@Override
 	public void testInit() {
+		robotContainer.init();
+
 		// Cancels all running commands at the start of test mode.
 		CommandScheduler.getInstance().cancelAll();
 	}

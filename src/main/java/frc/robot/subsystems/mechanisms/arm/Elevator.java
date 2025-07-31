@@ -29,13 +29,12 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants;
 import frc.robot.Constants.ElevatorConstants;
 
 /**
- * Subsystem to control the elevator and wrist.
+ * Subsystem to control the elevator.
  * <p>
- * Elevator and wrist safety features are in the {@link #periodic()} method.
+ * Elevator safety features are in the {@link #periodic()} method.
  */
 @Logged
 public class Elevator extends SubsystemBase {
@@ -112,7 +111,7 @@ public class Elevator extends SubsystemBase {
 	}
 
 	/**
-	 * This method is responsible for they safety of the elevator and wrist.
+	 * This method is responsible for they safety of the elevator.
 	 * <p>
 	 * This uses the {@link #target} to determine the target position of the elevator, and
 	 * constrain said target to the safe bounds.
@@ -136,7 +135,7 @@ public class Elevator extends SubsystemBase {
 	/**
 	 * Sets up the elevator. Should be called pre-enable.
 	 */
-	public void elevatorInit() {
+	public void init() {
 		setTarget(relativeEncoder.getPosition());
 		currentSetpoint = new TrapezoidProfile.State(relativeEncoder.getPosition(), 0);
 	}
@@ -172,8 +171,8 @@ public class Elevator extends SubsystemBase {
 	}
 
 	/**
-	 * Check if the elevator is within the tolerance to their target positions. This is used to
-	 * determine if the {@link Arm#setPositionCommand(Constants.ArmPosition)} command is finished.
+	 * Check if the elevator is within the tolerance to it's target position. This is used to determine
+	 * if the {@link Arm#setPositionCommand(ArmPosition)} command is finished.
 	 */
 	public boolean isAtTarget() {
 		return Math.abs(relativeEncoder.getPosition() - target) < ElevatorConstants.TOLERANCE;
@@ -228,7 +227,7 @@ public class Elevator extends SubsystemBase {
 	}
 
 	/**
-	 * Toggles brake mode on the elevator and wrist motors.
+	 * Toggles brake mode on the elevator motors.
 	 *
 	 * @return
 	 *         Command to run.

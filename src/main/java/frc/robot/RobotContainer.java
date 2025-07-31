@@ -12,6 +12,7 @@ import frc.robot.util.Elastic;
 import frc.robot.subsystems.drivetrain.Drivetrain;
 import frc.robot.subsystems.drivetrain.DrivetrainControls;
 import frc.robot.subsystems.drivetrain.Drivetrain.TranslationOrientation;
+import frc.robot.subsystems.mechanisms.arm.Arm;
 import frc.robot.subsystems.Auto;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -44,6 +45,7 @@ public class RobotContainer {
 	private final Drivetrain drivetrain = new Drivetrain(DrivetrainConstants.CONFIG_DIR);
 	@NotLogged
 	private final DrivetrainControls drivetrainControls = new DrivetrainControls(drivetrain);
+	private final Arm arm = new Arm();
 
 	/**
 	 * The Controller used by the Driver of the robot, primarily controlling the drivetrain.
@@ -67,6 +69,13 @@ public class RobotContainer {
 		configureNamedCommands();
 		configureDriverControls();
 		configureOperatorControls();
+	}
+
+	/**
+	 * This method is run when enabling into any mode.
+	 */
+	public void init() {
+		arm.init();
 	}
 
 	/**

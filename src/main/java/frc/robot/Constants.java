@@ -297,7 +297,7 @@ public final class Constants {
 		/**
 		 * CAN ID for the left elevator motor.
 		 */
-		public static final int LEFT_MOTOR_ID = 52;
+		public static final int LEFT_MOTOR_ID = 53;
 
 		// TODO: Tune PID constants
 		/**
@@ -375,5 +375,103 @@ public final class Constants {
 		 * Tolerance for the target to be considered reached in meters.
 		 */
 		public static final double TOLERANCE = .02;
+	}
+
+	/**
+	 * Constants used to configure the pivot.
+	 */
+	public static class PivotConstants {
+		/**
+		 * Motor CAN ID.
+		 */
+		// TODO: Update
+		public static final int MOTOR_ID = 31;
+
+		// TODO: Tune PID constants
+		/**
+		 * Pivot kP.
+		 */
+		public static final double KP = 0.01; // 0.006
+		/**
+		 * Pivot kI.
+		 */
+		public static final double KI = 0.0;
+		/**
+		 * Pivot kD.
+		 */
+		public static final double KD = 0.0;
+
+		/**
+		 * Pivot kS.
+		 */
+		public static final double KS = 0.1;// 0.1
+		/**
+		 * Pivot kG.
+		 */
+		public static final double KG = 0.3;
+		/**
+		 * Pivot kV.
+		 */
+		public static final double KV = 0; // Leave as zero, Max motion will take care of this
+
+		/**
+		 * Pivot kMinOutput.
+		 */
+		public static final double KMIN_OUTPUT = -.5;
+		/**
+		 * Pivot kMaxOutput.
+		 */
+		public static final double KMAX_OUTPUT = .5;
+		/**
+		 * Maximum velocity in degrees/s.
+		 */
+		// TODO: Update with accurate number
+		public static final double MAX_VELOCITY = 200.0;
+		/**
+		 * Maximum acceleration in degrees/s^2.
+		 */
+		// TODO: Update with accurate number
+		public static final double MAX_ACCELERATION = 200.0;
+
+		/**
+		 * Maximum position in degrees.
+		 */
+		// TODO: Update
+		public static final double MAX_POSITION = 145.0;
+		/**
+		 * Minimum position when the elevator is not lowered, in degrees.
+		 */
+		// TODO: Update
+		public static final double MIN_POSITION = -50.0;
+		/**
+		 * Minimum safe position while the elevator is lowered, in degrees.
+		 */
+		// TODO: Update
+		public static final double SAFE_MIN_POSITION = -40.0;
+
+		/**
+		 * Conversion factor from rotation to degrees.
+		 */
+		// TODO: Update
+		public static final double POSITION_CONVERSION_FACTOR = 1.0 / ((10.0 / 58.0) * (18.0 / 58.0) * (30.0 / 12.0)); // first two conversions are gear boxes, third one is chain
+		/**
+		 * Conversion factor from rotation to degrees per second.
+		 */
+		public static final double VELOCITY_CONVERSION_FACTOR = POSITION_CONVERSION_FACTOR / 60.0;
+		/**
+		 * Zero offset, in rotations, because reasons.
+		 */
+		// TODO: Update
+		public static final double ZERO_OFFSET = 0.73;
+
+		/**
+		 * Current limit in amps.
+		 */
+		public static final int CURRENT_LIMIT = 40;
+
+		/**
+		 * Tolerance for the target to be considered reached in degrees.
+		 */
+		public static final double TOLERANCE = 5;
 	}
 }

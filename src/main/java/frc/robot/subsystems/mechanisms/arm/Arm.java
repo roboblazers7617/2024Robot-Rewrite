@@ -1,5 +1,6 @@
 package frc.robot.subsystems.mechanisms.arm;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
@@ -33,8 +34,19 @@ public class Arm extends SubsystemBase {
 	 *            The Pivot to use.
 	 */
 	public Arm(Elevator elevator, Pivot pivot) {
-		this.elevator = new Elevator();
-		this.pivot = new Pivot();
+		this.elevator = elevator;
+		this.pivot = pivot;
+
+		// Add a brake toggle button to SmartDashboard.
+		SmartDashboard.putData("Toggle Arm Brake Mode", toggleBrakeModesCommand());
+	}
+
+	/**
+	 * Initializes the {@link #elevator} and {@link #pivot}. Should be called pre-enable.
+	 */
+	public void init() {
+		elevator.init();
+		pivot.init();
 	}
 
 	/**
@@ -50,7 +62,7 @@ public class Arm extends SubsystemBase {
 			@Override
 			public void initialize() {
 				elevator.setTarget(position.getElevatorPosition());
-				// pivot.setPosition(position.getPivotAngle());
+				pivot.setTarget(position.getPivotAngle());
 			}
 
 			@Override
@@ -74,7 +86,12 @@ public class Arm extends SubsystemBase {
 	 * @return
 	 *         True if both the elevator and pivot are at their target positions, false otherwise.
 	 */
-	public Boolean isAtTarget() {
-		return elevator.isAtTarget();// && pivot.isAtTarget();
+	public boolean isAtTarget() {
+		return elevator.isAtTarget() && pivot.isAtTarget();
+	}
+
+	public Command toggleBrakeModesCommand() {
+		return elevator.toggleBrakeModesCommand()
+				.andThen(pivot.toggleBrakeModesCommand());
 	}
 }
