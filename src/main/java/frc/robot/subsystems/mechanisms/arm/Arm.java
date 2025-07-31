@@ -52,9 +52,10 @@ public class Arm extends SubsystemBase {
 	 */
 	@Override
 	public void periodic() {
-		// If the elevator target it too low for the pivot target, set the pivot higher so the head can
-		// clear the body of the robot
-		if (elevator.getTarget() < ElevatorConstants.HEAD_CLEAR_POSITION && pivot.getTarget() < PivotConstants.SAFE_MIN_POSITION) {
+		// If the elevator target or position is too low for the pivot target, set the pivot higher so the
+		// head can clear the body of the robot
+		boolean elevatorSafe = (elevator.getPosition() < ElevatorConstants.HEAD_CLEAR_POSITION) && (elevator.getTarget() < ElevatorConstants.HEAD_CLEAR_POSITION);
+		if (elevatorSafe && pivot.getTarget() < PivotConstants.SAFE_MIN_POSITION) {
 			pivot.setTarget(PivotConstants.SAFE_MIN_POSITION);
 		}
 	}

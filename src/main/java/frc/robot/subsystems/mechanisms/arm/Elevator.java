@@ -103,7 +103,7 @@ public class Elevator extends SubsystemBase {
 		followerMotor.configure(followerElevatorMotorConfig, SparkBase.ResetMode.kResetSafeParameters, SparkBase.PersistMode.kPersistParameters);
 
 		// Set up the trapezoidal profile
-		currentSetpoint = new TrapezoidProfile.State(relativeEncoder.getPosition(), 0);
+		currentSetpoint = new TrapezoidProfile.State(getPosition(), 0);
 
 		// Put some handy things on SmartDashboard
 		SmartDashboard.putData("Toggle Elevator Brake Mode", toggleBrakeModesCommand());
@@ -136,8 +136,8 @@ public class Elevator extends SubsystemBase {
 	 * Sets up the elevator. Should be called pre-enable.
 	 */
 	public void init() {
-		setTarget(relativeEncoder.getPosition());
-		currentSetpoint = new TrapezoidProfile.State(relativeEncoder.getPosition(), 0);
+		setTarget(getPosition());
+		currentSetpoint = new TrapezoidProfile.State(getPosition(), 0);
 	}
 
 	/**
@@ -171,11 +171,21 @@ public class Elevator extends SubsystemBase {
 	}
 
 	/**
+	 * Gets the current position of the elevator.
+	 *
+	 * @return
+	 *         The elevator position in meters.
+	 */
+	public double getPosition() {
+		return relativeEncoder.getPosition();
+	}
+
+	/**
 	 * Check if the elevator is within the tolerance to it's target position. This is used to determine
 	 * if the {@link Arm#setPositionCommand(ArmPosition)} command is finished.
 	 */
 	public boolean isAtTarget() {
-		return Math.abs(relativeEncoder.getPosition() - target) < ElevatorConstants.TOLERANCE;
+		return Math.abs(getPosition() - target) < ElevatorConstants.TOLERANCE;
 	}
 
 	/**
@@ -198,8 +208,8 @@ public class Elevator extends SubsystemBase {
 					setTarget(target + (targetElevatorSpeed / 50)); // divide the speed by 50 because their are 50 loops per second
 					isJoystickCentered = false;
 				} else if (!isJoystickCentered) {
-					setTarget(relativeEncoder.getPosition());
-					currentSetpoint = new TrapezoidProfile.State(relativeEncoder.getPosition(), 0);
+					setTarget(getPosition());
+					currentSetpoint = new TrapezoidProfile.State(getPosition(), 0);
 					isJoystickCentered = true;
 				}
 			}
