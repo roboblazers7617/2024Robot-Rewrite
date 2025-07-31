@@ -17,7 +17,8 @@ public class JsonUtilities {
 	}
 
 	/**
-	 * Converts a {@link Translation3d} object to an array of doubles in format [x, y, z]. Measurements are in Meters.
+	 * Converts a {@link Translation3d} object to an array of doubles in format [x, y, z]. Measurements
+	 * are in Meters.
 	 *
 	 * @param translation
 	 *            {@link Translation3d} to convert.

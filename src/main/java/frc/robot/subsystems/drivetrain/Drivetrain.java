@@ -86,7 +86,8 @@ public class Drivetrain extends SubsystemBase {
 	 *            Directory of swerve drive config files.
 	 */
 	public Drivetrain(File directory) {
-		// Configure the Telemetry before creating the SwerveDrive to avoid unnecessary objects being created.
+		// Configure the Telemetry before creating the SwerveDrive to avoid unnecessary objects being
+		// created.
 		if (LoggingConstants.DEBUG_MODE) {
 			SwerveDriveTelemetry.verbosity = DrivetrainConstants.TELEMETRY_VERBOSITY_DEBUG;
 		} else {
@@ -96,19 +97,24 @@ public class Drivetrain extends SubsystemBase {
 		try {
 			swerveDrive = new SwerveParser(directory).createSwerveDrive(DrivetrainConstants.MAX_SPEED, DrivetrainConstants.STARTING_POSITION);
 			// Alternative method if you don't want to supply the conversion factor via JSON files.
-			// swerveDrive = new SwerveParser(directory).createSwerveDrive(maximumSpeed, angleConversionFactor, driveConversionFactor);
+			// swerveDrive = new SwerveParser(directory).createSwerveDrive(maximumSpeed, angleConversionFactor,
+			// driveConversionFactor);
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
 		swerveDrive.setAutoCenteringModules(false);
 		swerveDrive.setHeadingCorrection(DrivetrainConstants.ENABLE_HEADING_CORRECTION);
-		swerveDrive.setCosineCompensator(DrivetrainConstants.ENABLE_COSINE_COMPENSATION);// !SwerveDriveTelemetry.isSimulation); // Disables cosine compensation for simulations since it causes discrepancies not seen in real life.
+		swerveDrive.setCosineCompensator(DrivetrainConstants.ENABLE_COSINE_COMPENSATION);// !SwerveDriveTelemetry.isSimulation); // Disables cosine compensation for simulations since it
+																							// causes discrepancies not seen in real life.
 		swerveDrive.setAngularVelocityCompensation(DrivetrainConstants.AngularVelocityCompensation.USE_IN_TELEOP, DrivetrainConstants.AngularVelocityCompensation.USE_IN_AUTO, DrivetrainConstants.AngularVelocityCompensation.ANGULAR_VELOCITY_COEFFICIENT); // Correct for skew that gets worse as angular velocity increases. Start with a coefficient of 0.1.
-		swerveDrive.setModuleEncoderAutoSynchronize(DrivetrainConstants.EncoderAutoSynchronization.ENABLED, DrivetrainConstants.EncoderAutoSynchronization.DEADBAND); // Enable if you want to resynchronize your absolute encoders and motor encoders periodically when they are not moving.
-		swerveDrive.pushOffsetsToEncoders(); // Set the absolute encoder to be used over the internal encoder and push the offsets onto it. Throws warning if not possible
+		swerveDrive.setModuleEncoderAutoSynchronize(DrivetrainConstants.EncoderAutoSynchronization.ENABLED, DrivetrainConstants.EncoderAutoSynchronization.DEADBAND); // Enable if you want to resynchronize your absolute encoders and motor encoders periodically when
+																																										// they are not moving.
+		swerveDrive.pushOffsetsToEncoders(); // Set the absolute encoder to be used over the internal encoder and push the offsets onto it.
+												// Throws warning if not possible
 		swerveDrive.setMotorIdleMode(true);
 		// Stop the odometry thread if we are using vision that way we can synchronize updates better.
-		// TODO: #112 (Max/Lukas) If we disable vision updates, do we need to restart this thread to ensure odometry is udpated?
+		// TODO: #112 (Max/Lukas) If we disable vision updates, do we need to restart this thread to ensure
+		// odometry is udpated?
 		swerveDrive.stopOdometryThread();
 
 		// Set up vision
@@ -187,8 +193,10 @@ public class Drivetrain extends SubsystemBase {
 	}
 
 	/**
-	 * Resets odometry to the given pose. Gyro angle and module positions do not need to be reset when calling this
-	 * method. However, if either gyro angle or module position is reset, this must be called in order for odometry to
+	 * Resets odometry to the given pose. Gyro angle and module positions do not need to be reset when
+	 * calling this
+	 * method. However, if either gyro angle or module position is reset, this must be called in order
+	 * for odometry to
 	 * keep working.
 	 *
 	 * @param initialHolonomicPose
@@ -260,7 +268,8 @@ public class Drivetrain extends SubsystemBase {
 	 * Resets the gyro angle to zero and resets odometry to the same position, but facing toward 0.
 	 *
 	 * @apiNote
-	 *          The resulting rotation will be flipped 180 degrees from what is expected for alliance-relative when run on the Red alliance.
+	 *          The resulting rotation will be flipped 180 degrees from what is expected for
+	 *          alliance-relative when run on the Red alliance.
 	 * @see SwerveDrive#zeroGyro()
 	 */
 	public void zeroGyro() {
@@ -271,7 +280,8 @@ public class Drivetrain extends SubsystemBase {
 	 * Resets the gyro angle to zero and resets odometry to the same position, but facing toward 0.
 	 *
 	 * @apiNote
-	 *          The resulting rotation will be flipped 180 degrees from what is expected for alliance-relative when run on the Red alliance.
+	 *          The resulting rotation will be flipped 180 degrees from what is expected for
+	 *          alliance-relative when run on the Red alliance.
 	 * @see #zeroGyro()
 	 */
 	public Command zeroGyroCommand() {
@@ -282,7 +292,8 @@ public class Drivetrain extends SubsystemBase {
 	/**
 	 * This will zero (calibrate) the robot to assume the current position is facing forward
 	 * <p>
-	 * If on the Red alliance, it rotates the robot 180 degrees after the drivebase zero command to make it alliance-relative.
+	 * If on the Red alliance, it rotates the robot 180 degrees after the drivebase zero command to make
+	 * it alliance-relative.
 	 */
 	public void zeroGyroWithAlliance() {
 		if (Util.isRedAlliance()) {
@@ -297,7 +308,8 @@ public class Drivetrain extends SubsystemBase {
 	/**
 	 * Resets the gyro angle to zero and resets odometry to the same position, but facing toward 0.
 	 * <p>
-	 * If on the Red alliance, it rotates the robot 180 degrees after the drivebase zero command to make it alliance-relative.
+	 * If on the Red alliance, it rotates the robot 180 degrees after the drivebase zero command to make
+	 * it alliance-relative.
 	 *
 	 * @see #zeroGyroWithAlliance()
 	 */
@@ -319,7 +331,8 @@ public class Drivetrain extends SubsystemBase {
 	}
 
 	/**
-	 * Gets the current yaw angle of the robot, as reported by the swerve pose estimator in the underlying drivebase.
+	 * Gets the current yaw angle of the robot, as reported by the swerve pose estimator in the
+	 * underlying drivebase.
 	 * Note, this is not the raw gyro reading, this may be corrected from calls to resetOdometry().
 	 *
 	 * @return
@@ -370,7 +383,8 @@ public class Drivetrain extends SubsystemBase {
 	 *         A new {@link LockWheelsCommand}.
 	 * @see LockWheelsCommand
 	 */
-	// TODO: #113 (Max) Only putting in one comment for entire class, but all Commands should start with a capital letter per coding standards. Please update.
+	// TODO: #113 (Max) Only putting in one comment for entire class, but all Commands should start with
+	// a capital letter per coding standards. Please update.
 	public Command lockCommand() {
 		return new LockWheelsCommand(this);
 	}
@@ -388,15 +402,22 @@ public class Drivetrain extends SubsystemBase {
 	}
 
 	/**
-	 * The primary method for controlling the drivebase. Takes a {@link Translation2d} and a rotation rate, and
-	 * calculates and commands module states accordingly. Can use either open-loop or closed-loop velocity control for
-	 * the wheel velocities. Also has field- and robot-relative modes, which affect how the translation vector is used.
+	 * The primary method for controlling the drivebase. Takes a {@link Translation2d} and a rotation
+	 * rate, and
+	 * calculates and commands module states accordingly. Can use either open-loop or closed-loop
+	 * velocity control for
+	 * the wheel velocities. Also has field- and robot-relative modes, which affect how the translation
+	 * vector is used.
 	 *
 	 * @param translation
-	 *            {@link Translation2d} that is the commanded linear velocity of the robot, in meters per
-	 *            second. In robot-relative mode, positive x is torwards the bow (front) and positive y is
-	 *            torwards port (left). In field-relative mode, positive x is away from the alliance wall
-	 *            (field North) and positive y is torwards the left wall when looking through the driver station
+	 *            {@link Translation2d} that is the commanded linear velocity of the robot, in meters
+	 *            per
+	 *            second. In robot-relative mode, positive x is torwards the bow (front) and positive y
+	 *            is
+	 *            torwards port (left). In field-relative mode, positive x is away from the alliance
+	 *            wall
+	 *            (field North) and positive y is torwards the left wall when looking through the driver
+	 *            station
 	 *            glass (field West).
 	 * @param rotation
 	 *            Robot angular rate, in radians per second. CCW positive. Unaffected by field/robot
@@ -411,7 +432,8 @@ public class Drivetrain extends SubsystemBase {
 	}
 
 	/**
-	 * Sets the angle that heading control will turn to if no angle is inputed. Inverted based on alliance color.
+	 * Sets the angle that heading control will turn to if no angle is inputed. Inverted based on
+	 * alliance color.
 	 *
 	 * @param rotation
 	 *            Angle to set.
@@ -428,7 +450,8 @@ public class Drivetrain extends SubsystemBase {
 	}
 
 	/**
-	 * Sets the angle that heading control will turn to if no angle is inputed. Inverted based on alliance color.
+	 * Sets the angle that heading control will turn to if no angle is inputed. Inverted based on
+	 * alliance color.
 	 *
 	 * @param rotation
 	 *            Angle to set.
@@ -439,7 +462,8 @@ public class Drivetrain extends SubsystemBase {
 	}
 
 	/**
-	 * Command to set the angle that heading control will turn to if no angle is inputed. Inverted based on alliance color.
+	 * Command to set the angle that heading control will turn to if no angle is inputed. Inverted based
+	 * on alliance color.
 	 *
 	 * @param rotation
 	 *            Angle to set.
@@ -452,7 +476,8 @@ public class Drivetrain extends SubsystemBase {
 	}
 
 	/**
-	 * Method to reset what the heading control will turn to if no angle is inputed. Inverted based on alliance color. Used to prevent angle snapback.
+	 * Method to reset what the heading control will turn to if no angle is inputed. Inverted based on
+	 * alliance color. Used to prevent angle snapback.
 	 *
 	 * @see #setLastAngleScalar(Rotation2d)
 	 */
@@ -461,7 +486,8 @@ public class Drivetrain extends SubsystemBase {
 	}
 
 	/**
-	 * Command to reset what the heading control will turn to if no angle is inputed. Inverted based on alliance color. Used to prevent angle snapback.
+	 * Command to reset what the heading control will turn to if no angle is inputed. Inverted based on
+	 * alliance color. Used to prevent angle snapback.
 	 *
 	 * @return
 	 *         {@link Command} to run.
@@ -478,7 +504,8 @@ public class Drivetrain extends SubsystemBase {
 	 *            Target {@link Pose2d} to go to.
 	 * @return
 	 *         PathFinding command
-	 * @see AutoBuilder#pathfindToPose(Pose2d, PathConstraints, edu.wpi.first.units.measure.LinearVelocity)
+	 * @see AutoBuilder#pathfindToPose(Pose2d, PathConstraints,
+	 *      edu.wpi.first.units.measure.LinearVelocity)
 	 */
 	public Command driveToPoseCommand(Supplier<Pose2d> pose) {
 		// Create the constraints to use while pathfinding
@@ -601,7 +628,8 @@ public class Drivetrain extends SubsystemBase {
 	 *         Command to run
 	 */
 	public Command driveHeadingCommand(DoubleSupplier translationX, DoubleSupplier translationY, DoubleSupplier headingX, DoubleSupplier headingY) {
-		// swerveDrive.setHeadingCorrection(true); // Normally you would want heading correction for this kind of control.
+		// swerveDrive.setHeadingCorrection(true); // Normally you would want heading correction for this
+		// kind of control.
 		return run(() -> {
 			Translation2d scaledInputs = SwerveMath.scaleTranslation(new Translation2d(translationX.getAsDouble(), translationY.getAsDouble()), DrivetrainConstants.TRANSLATION_SCALE_NORMAL);
 

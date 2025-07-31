@@ -5,7 +5,8 @@ import edu.wpi.first.networktables.StringPublisher;
 import frc.robot.generated.VersionConstantsGenerated;
 
 /**
- * Constants that contain version metadata for the robot. Wraps an auto-generated class to add Javadoc and logging.
+ * Constants that contain version metadata for the robot. Wraps an auto-generated class to add
+ * Javadoc and logging.
  */
 public class VersionConstants {
 	/**

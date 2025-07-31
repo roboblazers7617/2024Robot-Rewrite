@@ -8,7 +8,8 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.BiConsumer;
 
 /**
- * Command that creates an {@link edu.wpi.first.wpilibj.AsynchronousInterrupt} and uses it to trigger a callback, waiting until the callback happens before finishing.
+ * Command that creates an {@link edu.wpi.first.wpilibj.AsynchronousInterrupt} and uses it to
+ * trigger a callback, waiting until the callback happens before finishing.
  */
 public class WaitUntilInterrupt extends Command {
 	/**
@@ -40,7 +41,8 @@ public class WaitUntilInterrupt extends Command {
 	}
 
 	/**
-	 * Creates a new WaitUntilInterrupt command that finishes when the interrupt is triggered. Triggers on both the rising and falling edges.
+	 * Creates a new WaitUntilInterrupt command that finishes when the interrupt is triggered. Triggers
+	 * on both the rising and falling edges.
 	 * <p>
 	 * First bool in callback indicates trigger on rising edge, second bool indicates falling edge.
 	 *

@@ -78,11 +78,13 @@ public final class Constants {
 		 */
 		public static final Pose2d STARTING_POSITION = new Pose2d(new Translation2d(Meters.of(1), Meters.of(4)), Rotation2d.fromDegrees(0));
 		/**
-		 * Enables {@link swervelib.SwerveDrive#headingCorrection heading correction}. Should only be used while controlling the robot via angle.
+		 * Enables {@link swervelib.SwerveDrive#headingCorrection heading correction}. Should only be used
+		 * while controlling the robot via angle.
 		 */
 		public static final boolean ENABLE_HEADING_CORRECTION = false;
 		/**
-		 * Enables {@link swervelib.parser.SwerveModuleConfiguration#useCosineCompensator cosine compensation}.
+		 * Enables {@link swervelib.parser.SwerveModuleConfiguration#useCosineCompensator cosine
+		 * compensation}.
 		 */
 		public static final boolean ENABLE_COSINE_COMPENSATION = false;
 
@@ -145,7 +147,8 @@ public final class Constants {
 			 */
 			public static final double MAX_VOLTS = 12.0;
 			/**
-			 * Delay in seconds between each section. This time allows for things to settle (allow motors to spin down, etc.).
+			 * Delay in seconds between each section. This time allows for things to settle (allow motors to
+			 * spin down, etc.).
 			 */
 			public static final double DELAY = 3.0;
 			/**
@@ -198,7 +201,8 @@ public final class Constants {
 	/**
 	 * Constants used to configure logging.
 	 * <p>
-	 * During a competition debug mode should be false to reduce network and CPU usage. All data will still be logged it just won't be accessible until after the match.
+	 * During a competition debug mode should be false to reduce network and CPU usage. All data will
+	 * still be logged it just won't be accessible until after the match.
 	 * <p>
 	 * During testing debug mode should be true to allow for real-time data viewing.
 	 */
@@ -260,11 +264,13 @@ public final class Constants {
 		 */
 		public static final ImuMode ENABLED_IMU_MODE = ImuMode.ExternalAssistInternalIMU;
 		/**
-		 * The {@link io.github.roboblazers7617.limelight.LimelightSettings#withArilTagIdFilter(List)} to use on the blue alliance.
+		 * The {@link io.github.roboblazers7617.limelight.LimelightSettings#withArilTagIdFilter(List)} to
+		 * use on the blue alliance.
 		 */
 		public static final List<Double> BLUE_TAG_ID_FILTER = List.of();
 		/**
-		 * The {@link io.github.roboblazers7617.limelight.LimelightSettings#withArilTagIdFilter(List)} to use on the Red alliance.
+		 * The {@link io.github.roboblazers7617.limelight.LimelightSettings#withArilTagIdFilter(List)} to
+		 * use on the Red alliance.
 		 */
 		public static final List<Double> RED_TAG_ID_FILTER = List.of();
 	}

@@ -57,7 +57,10 @@ public class Vision {
 		frontPoseEstimator = frontLimelight.makePoseEstimator(VisionConstants.POSE_ESTIMATOR_TYPE);
 		// backPoseEstimator = backLimelight.makePoseEstimator(VisionConstants.POSE_ESTIMATOR_TYPE);
 
-		/* backLimelight.settings.withImuMode(VisionConstants.DISABLED_IMU_MODE).withProcessedFrameFrequency(VisionConstants.DISABLED_UPDATE_FREQUENCY).save(); */
+		/*
+		 * backLimelight.settings.withImuMode(VisionConstants.DISABLED_IMU_MODE).withProcessedFrameFrequency
+		 * (VisionConstants.DISABLED_UPDATE_FREQUENCY).save();
+		 */
 
 		previousHeading = swerveDrive.getOdometryHeading();
 
@@ -69,12 +72,14 @@ public class Vision {
 	/*
 	 * public Command onEnableCommand() {
 	 * return Commands.runOnce(() -> {
-	 * backLimelight.settings.withImuMode(VisionConstants.ENABLED_IMU_MODE).withProcessedFrameFrequency(0).save();
+	 * backLimelight.settings.withImuMode(VisionConstants.ENABLED_IMU_MODE).withProcessedFrameFrequency(
+	 * 0).save();
 	 * }).ignoringDisable(true);
 	 * }
 	 * public Command onDisableCommand() {
 	 * return Commands.runOnce(() -> {
-	 * backLimelight.settings.withImuMode(VisionConstants.DISABLED_IMU_MODE).withProcessedFrameFrequency(VisionConstants.DISABLED_UPDATE_FREQUENCY).save();
+	 * backLimelight.settings.withImuMode(VisionConstants.DISABLED_IMU_MODE).withProcessedFrameFrequency
+	 * (VisionConstants.DISABLED_UPDATE_FREQUENCY).save();
 	 * }).ignoringDisable(true);
 	 * }
 	 */
@@ -132,7 +137,8 @@ public class Vision {
 		for (PoseEstimate poseEstimate : frontLimelightPoseEstimates) {
 			// Don't try to use a null PoseEstimate
 			if (poseEstimate != null && DriverStation.isEnabled() && Math.abs(swerveDrive.getOdometryHeading().minus(previousHeading).getDegrees()) < 50.0) {
-				// Only update vision if our angular velocity is less than 720 degrees per second and a tag was detected
+				// Only update vision if our angular velocity is less than 720 degrees per second and a tag was
+				// detected
 				if (Math.abs(swerveDrive.getMaximumChassisAngularVelocity()) < 720 && poseEstimate.tagCount > 0) {
 					swerveDrive.addVisionMeasurement(poseEstimate.getPose2d(), poseEstimate.getTimestampSeconds(), VecBuilder.fill(.7, .7, 9999999));
 				}
@@ -143,9 +149,12 @@ public class Vision {
 		 * for (PoseEstimate poseEstimate : backLimelightPoseEstimates) {
 		 * // Don't try to use a null PoseEstimate
 		 * if (poseEstimate != null) {
-		 * // Only update vision if our angular velocity is less than 720 degrees per second and a tag was detected
-		 * if (Math.abs(swerveDrive.getMaximumChassisAngularVelocity()) < 720 && poseEstimate.tagCount > 0) {
-		 * swerveDrive.addVisionMeasurement(poseEstimate.getPose2d(), poseEstimate.getTimestampSeconds(), VecBuilder.fill(.7, .7, 9999999));
+		 * // Only update vision if our angular velocity is less than 720 degrees per second and a tag was
+		 * detected
+		 * if (Math.abs(swerveDrive.getMaximumChassisAngularVelocity()) < 720 && poseEstimate.tagCount > 0)
+		 * {
+		 * swerveDrive.addVisionMeasurement(poseEstimate.getPose2d(), poseEstimate.getTimestampSeconds(),
+		 * VecBuilder.fill(.7, .7, 9999999));
 		 * }
 		 * }
 		 * }

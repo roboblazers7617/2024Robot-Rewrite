@@ -41,7 +41,8 @@ public class Auto {
 							drivetrain.getSwerveDrive().setChassisSpeeds(speedsRobotRelative);
 						}
 					},
-					// Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds. Also optionally outputs individual module feedforwards
+					// Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds. Also optionally outputs
+					// individual module feedforwards
 					new PPHolonomicDriveController(
 							// PPHolonomicController is the built in path following controller for holonomic drive trains
 							AutoConstants.TRANSLATION_PID_CONSTANTS, // Translation PID constants
@@ -69,7 +70,8 @@ public class Auto {
 	}
 
 	/**
-	 * Configures AutoBuilder if it hasn't already been configured. This should be run on enable so things like pathfinding commands don't cause the code to crash.
+	 * Configures AutoBuilder if it hasn't already been configured. This should be run on enable so
+	 * things like pathfinding commands don't cause the code to crash.
 	 *
 	 * @param drivetrain
 	 *            The Drivetrain for PathPlanner to control.

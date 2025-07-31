@@ -50,7 +50,8 @@ public class DrivetrainControls {
 	}
 
 	/**
-	 * Sets the controller speed multiplier back to {@link DrivetrainConstants#TRANSLATION_SCALE_NORMAL}.
+	 * Sets the controller speed multiplier back to
+	 * {@link DrivetrainConstants#TRANSLATION_SCALE_NORMAL}.
 	 */
 	public void resetSpeedMultiplier() {
 		setSpeedMultiplier(DrivetrainConstants.TRANSLATION_SCALE_NORMAL);
@@ -102,7 +103,8 @@ public class DrivetrainControls {
 	}
 
 	/**
-	 * A copy of {@link #driveGeneric(CommandXboxController)} that uses angular velocity control for turning.
+	 * A copy of {@link #driveGeneric(CommandXboxController)} that uses angular velocity control for
+	 * turning.
 	 *
 	 * @param controller
 	 *            The controller to read from.
@@ -129,7 +131,8 @@ public class DrivetrainControls {
 	}
 
 	/**
-	 * A copy of {@link #driveGeneric(CommandXboxController)} that pulls rotation from controller axis 2 for use in simulation.
+	 * A copy of {@link #driveGeneric(CommandXboxController)} that pulls rotation from controller axis 2
+	 * for use in simulation.
 	 *
 	 * @param controller
 	 *            The controller to read from.
@@ -160,7 +163,9 @@ public class DrivetrainControls {
 	}
 
 	/**
-	 * {@link #driveInputStreamScaledCommand(SwerveInputStream, TranslationOrientation)} that uses {@link #driveAngularVelocity(CommandXboxController)}. Calls {@link Drivetrain#resetLastAngleScalar()} on end to prevent snapback.
+	 * {@link #driveInputStreamScaledCommand(SwerveInputStream, TranslationOrientation)} that uses
+	 * {@link #driveAngularVelocity(CommandXboxController)}. Calls
+	 * {@link Drivetrain#resetLastAngleScalar()} on end to prevent snapback.
 	 *
 	 * @param controller
 	 *            Controller to use.
@@ -175,7 +180,8 @@ public class DrivetrainControls {
 	}
 
 	/**
-	 * {@link #driveInputStreamScaledCommand(SwerveInputStream, TranslationOrientation)} that uses {@link DrivetrainControls#driveDirectAngle(CommandXboxController)}.
+	 * {@link #driveInputStreamScaledCommand(SwerveInputStream, TranslationOrientation)} that uses
+	 * {@link DrivetrainControls#driveDirectAngle(CommandXboxController)}.
 	 *
 	 * @param controller
 	 *            Controller to use.
@@ -189,7 +195,8 @@ public class DrivetrainControls {
 	}
 
 	/**
-	 * {@link #driveInputStreamScaledCommand(SwerveInputStream, TranslationOrientation)} that uses {@link DrivetrainControls#driveDirectAngleSim(CommandXboxController)}.
+	 * {@link #driveInputStreamScaledCommand(SwerveInputStream, TranslationOrientation)} that uses
+	 * {@link DrivetrainControls#driveDirectAngleSim(CommandXboxController)}.
 	 *
 	 * @param controller
 	 *            Controller to use.
@@ -203,7 +210,8 @@ public class DrivetrainControls {
 	}
 
 	/**
-	 * {@link #driveInputStreamScaledCommand(SwerveInputStream, TranslationOrientation)} that uses {@link DrivetrainControls#driveStaticHeading(CommandXboxController, Supplier)}.
+	 * {@link #driveInputStreamScaledCommand(SwerveInputStream, TranslationOrientation)} that uses
+	 * {@link DrivetrainControls#driveStaticHeading(CommandXboxController, Supplier)}.
 	 *
 	 * @param controller
 	 *            Controller to use.
@@ -220,7 +228,8 @@ public class DrivetrainControls {
 	}
 
 	/**
-	 * {@link #driveStaticHeadingCommand(CommandXboxController, TranslationOrientation, Supplier)} that uses the heading of the nearest pose from a list of poses.
+	 * {@link #driveStaticHeadingCommand(CommandXboxController, TranslationOrientation, Supplier)} that
+	 * uses the heading of the nearest pose from a list of poses.
 	 *
 	 * @param controller
 	 *            Controller to use.

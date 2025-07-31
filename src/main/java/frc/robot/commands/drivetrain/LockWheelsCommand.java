@@ -45,7 +45,8 @@ public class LockWheelsCommand extends Command {
 	// Returns true when the command should end.
 	@Override
 	public boolean isFinished() {
-		// TODO: #111 (Max) Have you tested this that it is the behavior that you want? Are you able to exit this mode?
+		// TODO: #111 (Max) Have you tested this that it is the behavior that you want? Are you able to exit
+		// this mode?
 		return false;
 	}
 }

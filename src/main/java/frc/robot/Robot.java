@@ -25,7 +25,8 @@ import frc.robot.Constants.LoggingConstants;
 @Logged
 public class Robot extends TimedRobot {
 	/**
-	 * Command that contains the autonomous routine. Set and run at the start of {@link #autonomousInit()}.
+	 * Command that contains the autonomous routine. Set and run at the start of
+	 * {@link #autonomousInit()}.
 	 */
 	private Command autonomousCommand;
 	/**
