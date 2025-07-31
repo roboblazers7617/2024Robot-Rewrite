@@ -4,6 +4,7 @@
 
 package frc.robot;
 
+import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.DegreesPerSecondPerSecond;
 import static edu.wpi.first.units.Units.FeetPerSecond;
 import static edu.wpi.first.units.Units.Meters;
@@ -16,6 +17,7 @@ import java.util.List;
 import com.pathplanner.lib.config.PIDConstants;
 
 import edu.wpi.first.wpilibj.Filesystem;
+import frc.robot.subsystems.mechanisms.arm.ArmPosition;
 import io.github.roboblazers7617.limelight.LimelightSettings.ImuMode;
 import io.github.roboblazers7617.limelight.PoseEstimator.PoseEstimators;
 import swervelib.telemetry.SwerveDriveTelemetry.TelemetryVerbosity;
@@ -575,5 +577,24 @@ public final class Constants {
 		 * speed?
 		 */
 		public static final double VELOCITY_TOLERANCE = 0;
+	}
+
+	/**
+	 * Position presets for the Arm.
+	 */
+	public static class ArmPositions {
+		/**
+		 * A neutral position with the pivot low and the elevator retracted. The head is completely within
+		 * the frame of the robot in this position.
+		 */
+		public static final ArmPosition STOW = new ArmPosition(Meters.of(0), Degrees.of(20));
+		/**
+		 * A position used to pick up notes from the floor.
+		 */
+		public static final ArmPosition INTAKE_FLOOR = new ArmPosition(Meters.of(ElevatorConstants.MAX_POSITION), Degrees.of(3.75));
+		/**
+		 * A position used to pick up notes from the source.
+		 */
+		public static final ArmPosition INTAKE_SOURCE = new ArmPosition(Meters.of(ElevatorConstants.MAX_POSITION), Degrees.of(64.5));
 	}
 }

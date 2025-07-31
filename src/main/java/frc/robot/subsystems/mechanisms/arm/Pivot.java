@@ -94,7 +94,7 @@ public class Pivot extends SubsystemBase {
 		motor.configure(motorConfig, SparkBase.ResetMode.kResetSafeParameters, SparkBase.PersistMode.kPersistParameters);
 
 		// Initialize things
-		setTarget(absoluteEncoder.getPosition());
+		setTarget(getPosition());
 		currentSetpoint = new TrapezoidProfile.State(target, 0);
 
 		// Put some useful things on SmartDashboard
@@ -126,8 +126,8 @@ public class Pivot extends SubsystemBase {
 	 * Sets up the pivot. Should be called pre-enable.
 	 */
 	public void init() {
-		setTarget(absoluteEncoder.getPosition());
-		currentSetpoint = new TrapezoidProfile.State(absoluteEncoder.getPosition(), 0);
+		setTarget(getPosition());
+		currentSetpoint = new TrapezoidProfile.State(getPosition(), 0);
 	}
 
 	/**
@@ -161,11 +161,21 @@ public class Pivot extends SubsystemBase {
 	}
 
 	/**
+	 * Gets the current position of the pivot.
+	 *
+	 * @return
+	 *         The pivot position in degrees.
+	 */
+	public double getPosition() {
+		return absoluteEncoder.getPosition();
+	}
+
+	/**
 	 * Check if the pivot is within the tolerance to it's target position. This is used to determine if
 	 * the {@link Arm#setPositionCommand(ArmPosition)} command is finished.
 	 */
 	public boolean isAtTarget() {
-		return Math.abs(absoluteEncoder.getPosition() - target) < PivotConstants.TOLERANCE;
+		return Math.abs(getPosition() - target) < PivotConstants.TOLERANCE;
 	}
 
 	/**
@@ -187,8 +197,8 @@ public class Pivot extends SubsystemBase {
 					setTarget(target + (targetSpeed / 50)); // divide the speed by 50 because their are 50 loops per second
 					isJoystickCentered = false;
 				} else if (!isJoystickCentered) {
-					setTarget(absoluteEncoder.getPosition());
-					currentSetpoint = new TrapezoidProfile.State(absoluteEncoder.getPosition(), 0);
+					setTarget(getPosition());
+					currentSetpoint = new TrapezoidProfile.State(getPosition(), 0);
 					isJoystickCentered = true;
 				}
 			}

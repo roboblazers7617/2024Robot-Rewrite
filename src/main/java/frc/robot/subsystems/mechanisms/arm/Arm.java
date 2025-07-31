@@ -3,6 +3,7 @@ package frc.robot.subsystems.mechanisms.arm;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants.ArmPositions;
 import frc.robot.Constants.ElevatorConstants;
 import frc.robot.Constants.PivotConstants;
 
@@ -19,6 +20,11 @@ public class Arm extends SubsystemBase {
 	 * The Pivot component of the Arm.
 	 */
 	private final Pivot pivot;
+
+	/**
+	 * The ArmPosition that the Arm is currently trying to get to.
+	 */
+	private ArmPosition targetPosition = ArmPositions.STOW;
 
 	/**
 	 * Creates a new Arm subsystem using a new Elevator and Pivot.
@@ -52,11 +58,21 @@ public class Arm extends SubsystemBase {
 	 */
 	@Override
 	public void periodic() {
+		elevator.setTarget(targetPosition.getElevatorPosition());
+		pivot.setTarget(targetPosition.getPivotAngle());
+
 		// If the elevator target or position is too low for the pivot target, set the pivot higher so the
 		// head can clear the body of the robot
 		boolean elevatorSafe = (elevator.getPosition() < ElevatorConstants.HEAD_CLEAR_POSITION) && (elevator.getTarget() < ElevatorConstants.HEAD_CLEAR_POSITION);
 		if (elevatorSafe && pivot.getTarget() < PivotConstants.SAFE_MIN_POSITION) {
 			pivot.setTarget(PivotConstants.SAFE_MIN_POSITION);
+		}
+
+		// If the pivot target or position is too low for the elevator target, set the elevator higher so
+		// the head can clear the body of the robot
+		boolean pivotSafe = (pivot.getPosition() < PivotConstants.SAFE_MIN_POSITION) && (pivot.getTarget() < PivotConstants.SAFE_MIN_POSITION);
+		if (pivotSafe && elevator.getTarget() < ElevatorConstants.HEAD_CLEAR_POSITION) {
+			elevator.setTarget(ElevatorConstants.HEAD_CLEAR_POSITION);
 		}
 	}
 
@@ -80,8 +96,7 @@ public class Arm extends SubsystemBase {
 		Command command = new Command() {
 			@Override
 			public void initialize() {
-				elevator.setTarget(position.getElevatorPosition());
-				pivot.setTarget(position.getPivotAngle());
+				targetPosition = position;
 			}
 
 			@Override
@@ -91,7 +106,7 @@ public class Arm extends SubsystemBase {
 
 			@Override
 			public void end(boolean interrupted) {
-				System.out.println("done. interrupted: " + interrupted);
+				System.out.println("Arm move done. Interrupted?: " + interrupted);
 			}
 		};
 		command.addRequirements(this);
