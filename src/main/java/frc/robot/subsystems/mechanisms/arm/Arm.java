@@ -3,6 +3,8 @@ package frc.robot.subsystems.mechanisms.arm;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants.ElevatorConstants;
+import frc.robot.Constants.PivotConstants;
 
 /**
  * A superstructure to control both the Elevator and Pivot. Includes some important safety stuff so
@@ -39,6 +41,22 @@ public class Arm extends SubsystemBase {
 
 		// Add a brake toggle button to SmartDashboard.
 		SmartDashboard.putData("Toggle Arm Brake Mode", toggleBrakeModesCommand());
+	}
+
+	/**
+	 * This method is responsible for ensuring safe interactions between the head and the chassis of the
+	 * robot.
+	 * <p>
+	 * This method will check the setpoint of the wrist, and, in the case that it is too low for the
+	 * current elevator position, it will set the target to the lowest safe position.
+	 */
+	@Override
+	public void periodic() {
+		// If the elevator target it too low for the pivot target, set the pivot higher so the head can
+		// clear the body of the robot
+		if (elevator.getTarget() < ElevatorConstants.HEAD_CLEAR_POSITION && pivot.getTarget() < PivotConstants.SAFE_MIN_POSITION) {
+			pivot.setTarget(PivotConstants.SAFE_MIN_POSITION);
+		}
 	}
 
 	/**

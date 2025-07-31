@@ -355,6 +355,11 @@ public final class Constants {
 		// TODO: Update with accurate number
 		public static final double MAX_POSITION = 1.44;
 		/**
+		 * Position at which the head clears the robot chassis, in meters.
+		 */
+		// TODO: Update with accurate number
+		public static final double HEAD_CLEAR_POSITION = 0.5;
+		/**
 		 * Conversion factor from rotation to meters. 3.81cm diameter spool, 16:1 gear ratio
 		 */
 		// TODO: Update with accurate number
@@ -444,7 +449,8 @@ public final class Constants {
 		// TODO: Update
 		public static final double MIN_POSITION = -50.0;
 		/**
-		 * Minimum safe position while the elevator is lowered, in degrees.
+		 * Minimum safe position while the elevator is below {@link ElevatorConstants#HEAD_CLEAR_POSITION},
+		 * in degrees.
 		 */
 		// TODO: Update
 		public static final double SAFE_MIN_POSITION = -40.0;

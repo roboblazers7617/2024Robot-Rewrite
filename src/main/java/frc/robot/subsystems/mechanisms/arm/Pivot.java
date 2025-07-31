@@ -151,6 +151,16 @@ public class Pivot extends SubsystemBase {
 	}
 
 	/**
+	 * Gets the current {@link #target}.
+	 *
+	 * @return
+	 *         The pivot target in meters.
+	 */
+	public double getTarget() {
+		return target;
+	}
+
+	/**
 	 * Check if the pivot is within the tolerance to it's target position. This is used to determine if
 	 * the {@link Arm#setPositionCommand(ArmPosition)} command is finished.
 	 */
