@@ -40,7 +40,8 @@ public class Pivot extends SubsystemBase {
 	/**
 	 * The pivot motor.
 	 */
-	private final SparkMax motor = new SparkMax(PivotConstants.MOTOR_ID, MotorType.kBrushless);
+	// TODO: Figure out a better way to handle simulation than just making this public
+	public final SparkMax motor = new SparkMax(PivotConstants.MOTOR_ID, MotorType.kBrushless);
 	/**
 	 * The absolute encoder on the pivot.
 	 */
