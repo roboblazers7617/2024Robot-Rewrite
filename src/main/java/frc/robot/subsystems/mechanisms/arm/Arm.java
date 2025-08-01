@@ -1,5 +1,20 @@
 package frc.robot.subsystems.mechanisms.arm;
 
+import static edu.wpi.first.units.Units.Degrees;
+import static edu.wpi.first.units.Units.RPM;
+import static edu.wpi.first.units.Units.Radians;
+import static edu.wpi.first.units.Units.RadiansPerSecond;
+
+import com.revrobotics.sim.SparkMaxSim;
+
+import edu.wpi.first.math.system.plant.DCMotor;
+import edu.wpi.first.wpilibj.RobotController;
+import edu.wpi.first.wpilibj.simulation.BatterySim;
+import edu.wpi.first.wpilibj.simulation.RoboRioSim;
+import edu.wpi.first.wpilibj.simulation.SingleJointedArmSim;
+import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
+import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
+import edu.wpi.first.wpilibj.smartdashboard.MechanismRoot2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -27,6 +42,27 @@ public class Arm extends SubsystemBase {
 	private ArmPosition targetPosition = ArmPositions.STOW;
 
 	/**
+	 * The gearbox on the pivot.
+	 */
+	public final DCMotor pivotGearbox = DCMotor.getNEO(1);
+	/**
+	 * Simulation object for the arm.
+	 */
+	private final SingleJointedArmSim armSim = new SingleJointedArmSim(pivotGearbox, PivotConstants.POSITION_CONVERSION_FACTOR, SingleJointedArmSim.estimateMOI(ElevatorConstants.MAX_POSITION, PivotConstants.ARM_WEIGHT), ElevatorConstants.MAX_POSITION, Degrees.of(PivotConstants.MIN_POSITION).in(Radians), Degrees.of(PivotConstants.MAX_POSITION).in(Radians), true, 0);
+	/**
+	 * Simulation object for the pivot motor.
+	 */
+	public final SparkMaxSim sim;
+	/**
+	 * Mechanism2d that represents the state of the arm.
+	 */
+	private final Mechanism2d mechanism;
+	/**
+	 * Mechanism Ligament that represents the elevator.
+	 */
+	private final MechanismLigament2d mechanismElevator;
+
+	/**
 	 * Creates a new Arm subsystem using a new Elevator and Pivot.
 	 */
 	public Arm() {
@@ -45,8 +81,23 @@ public class Arm extends SubsystemBase {
 		this.elevator = elevator;
 		this.pivot = pivot;
 
+		// Set up simulation
+		sim = new SparkMaxSim(pivot.motor, pivotGearbox);
+
+		// Set up the Mechanism2d
+		mechanism = new Mechanism2d(3, 3);
+		// The mechanism root node
+		MechanismRoot2d root = mechanism.getRoot("climber", 2, 2);
+
+		// MechanismLigament2d objects represent each "section"/"stage" of the mechanism, and are based
+		// off the root node or another ligament object
+		mechanismElevator = root.append(new MechanismLigament2d("elevator", 0.5, 90));
+
 		// Add a brake toggle button to SmartDashboard.
 		SmartDashboard.putData("Toggle Arm Brake Mode", toggleBrakeModesCommand());
+
+		// Put the mechanism on SmartDashboard.
+		SmartDashboard.putData("Arm Sim", mechanism);
 	}
 
 	/**
@@ -74,6 +125,30 @@ public class Arm extends SubsystemBase {
 		if (pivotSafe && elevator.getTarget() < ElevatorConstants.HEAD_CLEAR_POSITION) {
 			elevator.setTarget(ElevatorConstants.HEAD_CLEAR_POSITION);
 		}
+
+		mechanismElevator.setAngle(90 - pivot.getPosition());
+		// mechanismElevator.setLength(elevator.getPosition());
+
+		System.out.println(pivot.getPosition() + ", " + RadiansPerSecond.of(armSim.getVelocityRadPerSec()).in(RPM));
+	}
+
+	/**
+	 * Periodic method used in simulation.
+	 */
+	@Override
+	public void simulationPeriodic() {
+		// In this method, we update our simulation of what our arm is doing
+		// First, we set our "inputs" (voltages)
+		armSim.setInput(pivot.motor.getAppliedOutput() * RobotController.getBatteryVoltage());
+
+		// Next, we update it. The standard loop time is 20ms.
+		armSim.update(0.020);
+
+		// SimBattery estimates loaded battery voltages
+		RoboRioSim.setVInVoltage(BatterySim.calculateDefaultBatteryLoadedVoltage(armSim.getCurrentDrawAmps()));
+
+		// Update the Mechanism Arm angle based on the simulated arm angle
+		sim.iterate(RadiansPerSecond.of(armSim.getVelocityRadPerSec()).in(RPM), RoboRioSim.getVInVoltage(), 0.020);
 	}
 
 	/**
