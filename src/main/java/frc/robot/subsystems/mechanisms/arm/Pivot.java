@@ -26,6 +26,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
 import frc.robot.Constants.PivotConstants;
 
 /**
@@ -93,12 +94,16 @@ public class Pivot extends SubsystemBase {
 
 		motor.configure(motorConfig, SparkBase.ResetMode.kResetSafeParameters, SparkBase.PersistMode.kPersistParameters);
 
+		// Enable brake mode on robot enable
+		RobotModeTriggers.disabled()
+				.onFalse(enableBrakeModeCommand());
+
 		// Initialize things
 		setTarget(getPosition());
 		currentSetpoint = new TrapezoidProfile.State(target, 0);
 
 		// Put some useful things on SmartDashboard
-		SmartDashboard.putData("Toggle Pivot Brake Mode", toggleBrakeModesCommand());
+		SmartDashboard.putData("Toggle Pivot Brake Mode", toggleBrakeModeCommand());
 		SmartDashboard.putData("Stop Pivot Command", doNothing());
 	}
 
@@ -231,7 +236,7 @@ public class Pivot extends SubsystemBase {
 	 * @return
 	 *         Command to run.
 	 */
-	public Command toggleBrakeModesCommand() {
+	public Command toggleBrakeModeCommand() {
 		return this.runOnce(() -> {
 			SparkBaseConfig newPivotConfig = new SparkMaxConfig();
 			if (motor.configAccessor.getIdleMode() == IdleMode.kBrake) {
@@ -239,6 +244,21 @@ public class Pivot extends SubsystemBase {
 			} else {
 				newPivotConfig.idleMode(IdleMode.kBrake);
 			}
+			motor.configure(newPivotConfig, SparkBase.ResetMode.kNoResetSafeParameters, SparkBase.PersistMode.kNoPersistParameters);
+		}).ignoringDisable(true);
+	}
+
+	/**
+	 * Enables brake mode on the pivot motor. Called on enable to ensure the pivot is in brake mode for
+	 * the match.
+	 *
+	 * @return
+	 *         Command to run.
+	 */
+	public Command enableBrakeModeCommand() {
+		return this.runOnce(() -> {
+			SparkBaseConfig newPivotConfig = new SparkMaxConfig()
+					.idleMode(IdleMode.kBrake);
 			motor.configure(newPivotConfig, SparkBase.ResetMode.kNoResetSafeParameters, SparkBase.PersistMode.kNoPersistParameters);
 		}).ignoringDisable(true);
 	}

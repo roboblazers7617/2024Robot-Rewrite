@@ -29,6 +29,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
 import frc.robot.Constants.ElevatorConstants;
 
 /**
@@ -105,8 +106,12 @@ public class Elevator extends SubsystemBase {
 		// Set up the trapezoidal profile
 		currentSetpoint = new TrapezoidProfile.State(getPosition(), 0);
 
+		// Enable brake mode on robot enable
+		RobotModeTriggers.disabled()
+				.onFalse(enableBrakeModeCommand());
+
 		// Put some handy things on SmartDashboard
-		SmartDashboard.putData("Toggle Elevator Brake Mode", toggleBrakeModesCommand());
+		SmartDashboard.putData("Toggle Elevator Brake Mode", toggleBrakeModeCommand());
 		SmartDashboard.putData("Stop Elevator Command", doNothing());
 	}
 
@@ -242,7 +247,7 @@ public class Elevator extends SubsystemBase {
 	 * @return
 	 *         Command to run.
 	 */
-	public Command toggleBrakeModesCommand() {
+	public Command toggleBrakeModeCommand() {
 		return this.runOnce(() -> {
 			SparkBaseConfig newElevatorConfig = new SparkMaxConfig();
 			if (leaderMotor.configAccessor.getIdleMode() == IdleMode.kBrake) {
@@ -250,6 +255,22 @@ public class Elevator extends SubsystemBase {
 			} else {
 				newElevatorConfig.idleMode(IdleMode.kBrake);
 			}
+			leaderMotor.configure(newElevatorConfig, SparkBase.ResetMode.kNoResetSafeParameters, SparkBase.PersistMode.kNoPersistParameters);
+			followerMotor.configure(newElevatorConfig, SparkBase.ResetMode.kNoResetSafeParameters, SparkBase.PersistMode.kNoPersistParameters);
+		}).ignoringDisable(true);
+	}
+
+	/**
+	 * Enables brake mode on the elevator motors. Called on enable to ensure the elevator is in brake
+	 * mode for the match.
+	 *
+	 * @return
+	 *         Command to run.
+	 */
+	public Command enableBrakeModeCommand() {
+		return this.runOnce(() -> {
+			SparkBaseConfig newElevatorConfig = new SparkMaxConfig()
+					.idleMode(IdleMode.kBrake);
 			leaderMotor.configure(newElevatorConfig, SparkBase.ResetMode.kNoResetSafeParameters, SparkBase.PersistMode.kNoPersistParameters);
 			followerMotor.configure(newElevatorConfig, SparkBase.ResetMode.kNoResetSafeParameters, SparkBase.PersistMode.kNoPersistParameters);
 		}).ignoringDisable(true);

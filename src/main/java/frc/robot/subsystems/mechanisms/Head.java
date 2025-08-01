@@ -21,6 +21,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
 import frc.robot.Constants.IntakeConstants;
 import frc.robot.Constants.ShooterConstants;
 
@@ -69,7 +70,7 @@ public class Head extends SubsystemBase {
 	 * Creates a new Head.
 	 */
 	public Head() {
-		// Shooter motor config
+		// Set up shooter motors
 		SparkBaseConfig baseShooterConfig = new SparkMaxConfig()
 				.smartCurrentLimit(ShooterConstants.CURRENT_LIMIT)
 				.idleMode(IdleMode.kCoast);
@@ -87,13 +88,17 @@ public class Head extends SubsystemBase {
 				.follow(shooterLeaderMotor, false);
 		shooterFollowerMotor.configure(followerShooterConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
-		// Intake motor
+		// Set up intake motor
 		SparkBaseConfig intakeMotorConfig = new SparkMaxConfig()
 				.smartCurrentLimit(IntakeConstants.CURRENT_LIMIT)
 				.idleMode(IdleMode.kBrake)
 				.inverted(true);
 
 		intakeMotor.configure(intakeMotorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+
+		// Enable brake mode on robot enable
+		RobotModeTriggers.disabled()
+				.onFalse(enableBrakeModeCommand());
 	}
 
 	@Override
@@ -311,7 +316,8 @@ public class Head extends SubsystemBase {
 	}
 
 	/**
-	 * Enables brake mode on the intake motor.
+	 * Enables brake mode on the intake motor. Called on enable to ensure the intake is in brake mode
+	 * for the match.
 	 *
 	 * @return
 	 *         {@link Command} to run

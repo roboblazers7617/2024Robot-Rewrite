@@ -125,7 +125,7 @@ public class Arm extends SubsystemBase {
 	}
 
 	public Command toggleBrakeModesCommand() {
-		return elevator.toggleBrakeModesCommand()
-				.andThen(pivot.toggleBrakeModesCommand());
+		return elevator.toggleBrakeModeCommand()
+				.andThen(pivot.toggleBrakeModeCommand());
 	}
 }
