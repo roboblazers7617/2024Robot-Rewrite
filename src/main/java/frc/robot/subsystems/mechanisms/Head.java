@@ -117,7 +117,7 @@ public class Head extends SubsystemBase {
 	 * @return
 	 *         {@link Command} to run
 	 */
-	public Command startOutakeCommand() {
+	public Command startOuttakeCommand() {
 		return Commands.runOnce(() -> {
 			setIntakeSpeed(IntakeConstants.OUTTAKE_SPEED);
 		}, this);
@@ -149,7 +149,7 @@ public class Head extends SubsystemBase {
 				.andThen(Commands.runOnce(() -> {
 					setIntakeSpeed(IntakeConstants.ALIGMNMENT_SPEED);
 				}))
-				.andThen(Commands.waitUntil(() -> isNoteWithinSensor()))
+				.andThen(Commands.waitUntil(() -> isNoteWithinShootingSensor()))
 				.andThen(() -> {
 					setIntakeSpeed(0);
 				});
@@ -161,11 +161,11 @@ public class Head extends SubsystemBase {
 	 * @return
 	 *         {@link Command} to run
 	 */
-	public Command outakePieceCommand() {
+	public Command outtakePieceCommand() {
 		return Commands.runOnce(() -> {
 			setIntakeSpeed(IntakeConstants.OUTTAKE_SPEED);
 		}, this)
-				.andThen(Commands.waitUntil(() -> !isNoteWithinSensor()))
+				.andThen(Commands.waitUntil(() -> !isNoteWithinShootingSensor()))
 				.andThen(Commands.waitSeconds(3))
 				.finallyDo(() -> {
 					setIntakeSpeed(0);
@@ -254,16 +254,6 @@ public class Head extends SubsystemBase {
 	}
 
 	/**
-	 * Shoots and then stops the shooter.
-	 *
-	 * @return
-	 *         {@link Command} to run
-	 */
-	public Command shootCommand() {
-		return shootCommand(true);
-	}
-
-	/**
 	 * Shoots.
 	 *
 	 * @param stopShooter
@@ -276,20 +266,10 @@ public class Head extends SubsystemBase {
 				.andThen(Commands.runOnce(() -> {
 					setIntakeSpeed(IntakeConstants.FEEDER_SPEED);
 				}))
-				.andThen(Commands.waitUntil(() -> isNoteWithinSensor()))
-				.andThen(Commands.waitUntil(() -> !isNoteWithinSensor()))
+				.andThen(Commands.waitUntil(() -> isNoteWithinShootingSensor()))
+				.andThen(Commands.waitUntil(() -> !isNoteWithinShootingSensor()))
 				.andThen(Commands.waitSeconds(0.2))
 				.andThen(Commands.either(spinDownShooterCommand().andThen(() -> setIntakeSpeed(0.0)), Commands.none(), () -> stopShooter));
-	}
-
-	/**
-	 * Gets the value of the shooting position sensor.
-	 *
-	 * @return
-	 *         Is the note in the position to shoot?
-	 */
-	public boolean isNoteWithinSensor() {
-		return !isNoteInShootPosition.get();
 	}
 
 	/**
@@ -303,12 +283,22 @@ public class Head extends SubsystemBase {
 	}
 
 	/**
+	 * Gets the value of the shooting position sensor.
+	 *
+	 * @return
+	 *         Is the note in the position to shoot?
+	 */
+	public boolean isNoteWithinShootingSensor() {
+		return !isNoteInShootPosition.get();
+	}
+
+	/**
 	 * Toggles brake mode on the intake motor.
 	 *
 	 * @return
 	 *         {@link Command} to run
 	 */
-	public Command toggleBrakeMode() {
+	public Command toggleBrakeModeCommand() {
 		return new InstantCommand(() -> {
 			SparkBaseConfig newConfig = new SparkMaxConfig();
 			if (intakeMotor.configAccessor.getIdleMode() == IdleMode.kBrake) {
@@ -326,7 +316,7 @@ public class Head extends SubsystemBase {
 	 * @return
 	 *         {@link Command} to run
 	 */
-	public Command EnableBrakeMode() {
+	public Command enableBrakeModeCommand() {
 		return new InstantCommand(() -> {
 			SparkBaseConfig newConfig = new SparkMaxConfig()
 					.idleMode(IdleMode.kBrake);
