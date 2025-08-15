@@ -24,6 +24,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
 import frc.robot.Constants.IntakeConstants;
 import frc.robot.Constants.ShooterConstants;
+import frc.robot.util.InvalidStateTransitionException;
 
 /**
  * Shooter and intake.
@@ -60,6 +61,42 @@ public class Head extends SubsystemBase {
 	 * aligned correctly.
 	 */
 	private final DigitalInput isNoteInIntake = new DigitalInput(IntakeConstants.NOTE_ALIGNMENT_SENSOR_DIO);
+
+	/**
+	 * The current state the head is in. This does not include whether or not the shooter is spinning,
+	 * although some states will spin up the head if needed.
+	 */
+	enum HeadState {
+		/**
+		 * Head is not holding a note.
+		 */
+		IDLE,
+		/**
+		 * Head is intaking.
+		 */
+		INTAKE,
+		/**
+		 * Head is outtaking.
+		 */
+		OUTTAKE,
+		/**
+		 * Head is holding a note, but not shooting.
+		 */
+		WAIT,
+		/**
+		 * Head is waiting to shoot.
+		 */
+		SHOOT,
+		/**
+		 * Head is shooting.
+		 */
+		SHOOTING,
+	}
+
+	/**
+	 * The current state of the head.
+	 */
+	private HeadState headState = HeadState.IDLE;
 
 	/**
 	 * Shooter setpoint in RPM.
@@ -103,7 +140,126 @@ public class Head extends SubsystemBase {
 
 	@Override
 	public void periodic() {
-		// This method will be called once per scheduler run
+		// Check the current state and handle sequence transitions.
+		switch (headState) {
+			case IDLE:
+				break;
+
+			case INTAKE:
+				if (isNoteWithinShootingSensor()) {
+					// Stop intaking
+					transitionToState(HeadState.WAIT);
+				} else if (isNoteWithinAlignmentSensor()) {
+					// Slow down the intake to align the note
+					setIntakeSpeed(IntakeConstants.ALIGMNMENT_SPEED);
+				}
+				break;
+
+			case OUTTAKE:
+				if (!isNoteWithinAlignmentSensor()) {
+					// Stop outtaking
+					transitionToState(HeadState.IDLE);
+				}
+				break;
+
+			case WAIT:
+				break;
+
+			case SHOOT:
+				if (isReadyToShoot()) {
+					// Shoot a note
+					setIntakeSpeed(IntakeConstants.FEEDER_SPEED);
+					transitionToState(HeadState.SHOOTING);
+				} else {
+					// TODO: Put in shooter speed logic
+					setShooterSpeed(0);
+				}
+				break;
+
+			case SHOOTING:
+				if (!isNoteWithinShootingSensor()) {
+					transitionToState(HeadState.IDLE);
+				}
+				break;
+		}
+	}
+
+	/**
+	 * Transitions to a new state.
+	 *
+	 * @param state
+	 *            The state to transition to.
+	 */
+	private void transitionToState(HeadState state) {
+		try {
+			switch (state) {
+				case IDLE:
+					if (headState == HeadState.WAIT) {
+						throw new InvalidStateTransitionException("Cannot become idle while holding a note.");
+					}
+
+					// Stop the intake
+					setIntakeSpeed(0);
+
+					headState = HeadState.IDLE;
+					break;
+
+				case INTAKE:
+					if (headState != HeadState.IDLE) {
+						throw new InvalidStateTransitionException("Cannot intake when holding a note.");
+					}
+
+					// Start intaking
+					setIntakeSpeed(IntakeConstants.INTAKE_SPEED);
+
+					headState = HeadState.INTAKE;
+					break;
+
+				case OUTTAKE:
+					if (headState != HeadState.WAIT) {
+						throw new InvalidStateTransitionException("Cannot outtake when not holding a note.");
+					}
+
+					// Start outtaking
+					setIntakeSpeed(IntakeConstants.OUTTAKE_SPEED);
+
+					headState = HeadState.OUTTAKE;
+					break;
+
+				case WAIT:
+					if (headState != HeadState.INTAKE) {
+						throw new InvalidStateTransitionException("Cannot wait without intaking a note.");
+					}
+
+					// Stop the intake
+					setIntakeSpeed(0);
+
+					headState = HeadState.WAIT;
+					break;
+
+				case SHOOT:
+					if (headState != HeadState.WAIT) {
+						throw new InvalidStateTransitionException("Cannot shoot when not holding a note.");
+					}
+					headState = HeadState.SHOOT;
+					break;
+
+				case SHOOTING:
+					if (headState != HeadState.SHOOT) {
+						throw new InvalidStateTransitionException("Cannot end shoot sequence without starting.");
+					}
+					headState = HeadState.SHOOTING;
+					break;
+			}
+		} catch (InvalidStateTransitionException e) {
+			System.err.print("Cannot transition to " + state + " from " + headState);
+			if (!e.getMessage().isEmpty()) {
+				System.err.print(": ");
+				System.err.println(e.getMessage());
+			} else {
+				System.err.println();
+			}
+		}
 	}
 
 	/**
