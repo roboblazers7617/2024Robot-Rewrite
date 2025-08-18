@@ -13,6 +13,7 @@ import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.config.SparkBaseConfig;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.SparkClosedLoopController;
+import com.github.oxo42.stateless4j.StateMachineConfig;
 import com.revrobotics.RelativeEncoder;
 
 import edu.wpi.first.epilogue.Logged;
@@ -24,7 +25,6 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
 import frc.robot.Constants.IntakeConstants;
 import frc.robot.Constants.ShooterConstants;
-import frc.robot.util.InvalidStateTransitionException;
 
 /**
  * Shooter and intake.
@@ -74,29 +74,58 @@ public class Head extends SubsystemBase {
 		/**
 		 * Head is intaking.
 		 */
-		INTAKE,
+		INTAKING,
 		/**
 		 * Head is outtaking.
 		 */
-		OUTTAKE,
+		OUTTAKING,
 		/**
 		 * Head is holding a note, but not shooting.
 		 */
 		WAIT,
 		/**
-		 * Head is waiting to shoot.
-		 */
-		SHOOT,
-		/**
 		 * Head is shooting.
 		 */
 		SHOOTING,
+		/**
+		 * Head has started to shoot and is waiting for the note to be shot.
+		 */
+		SHOOTING_STARTED,
 	}
 
-	/**
-	 * The current state of the head.
-	 */
-	private HeadState headState = HeadState.IDLE;
+	enum HeadTrigger {
+		/**
+		 * Trigger to start shooting.
+		 */
+		SHOOT,
+		/**
+		 * Trigger called when shooting has started.
+		 */
+		SHOOTING_STARTED,
+		/**
+		 * Trigger to finish shooting.
+		 */
+		SHOOTING_DONE,
+		/**
+		 * Trigger to start intaking.
+		 */
+		INTAKE,
+		/**
+		 * Trigger to finish intaking.
+		 */
+		INTAKE_DONE,
+		/**
+		 * Trigger to start outtaking.
+		 */
+		OUTTAKE,
+		/**
+		 * Trigger to finish outtaking.
+		 */
+		OUTTAKE_DONE,
+	}
+
+	private final StateMachineConfig<HeadState, HeadTrigger> stateMachineConfig = new StateMachineConfig<>();
+	private final com.github.oxo42.stateless4j.StateMachine<HeadState, HeadTrigger> stateMachine;
 
 	/**
 	 * Shooter setpoint in RPM.
@@ -136,164 +165,96 @@ public class Head extends SubsystemBase {
 		// Enable brake mode on robot enable
 		RobotModeTriggers.disabled()
 				.onFalse(enableBrakeModeCommand());
+
+		// Set up the state machine
+		stateMachineConfig.configure(HeadState.IDLE)
+				.onEntry(() -> {
+					// Stop the intake
+					setIntakeSpeed(0);
+				})
+				.permit(HeadTrigger.INTAKE, HeadState.INTAKING);
+
+		stateMachineConfig.configure(HeadState.INTAKING)
+				.onEntry(() -> {
+					// Start intaking
+					setIntakeSpeed(IntakeConstants.INTAKE_SPEED);
+				})
+				.onExit(() -> {
+					// Stop the intake
+					setIntakeSpeed(0);
+				})
+				.permit(HeadTrigger.INTAKE_DONE, HeadState.WAIT);
+
+		stateMachineConfig.configure(HeadState.OUTTAKING)
+				.onEntry(() -> {
+					// Start outtaking
+					setIntakeSpeed(IntakeConstants.OUTTAKE_SPEED);
+				})
+				.onExit(() -> {
+					// Stop the intake
+					setIntakeSpeed(0);
+				})
+				.permit(HeadTrigger.OUTTAKE_DONE, HeadState.IDLE);
+
+		stateMachineConfig.configure(HeadState.WAIT)
+				.permit(HeadTrigger.SHOOT, HeadState.SHOOTING)
+				.permit(HeadTrigger.OUTTAKE, HeadState.OUTTAKING);
+
+		stateMachineConfig.configure(HeadState.SHOOTING)
+				.permit(HeadTrigger.SHOOTING_STARTED, HeadState.SHOOTING_STARTED);
+
+		stateMachineConfig.configure(HeadState.SHOOTING_STARTED)
+				.substateOf(HeadState.SHOOTING)
+				.permit(HeadTrigger.SHOOTING_DONE, HeadState.IDLE);
+
+		stateMachine = new com.github.oxo42.stateless4j.StateMachine<>(HeadState.IDLE, stateMachineConfig);
 	}
 
 	@Override
 	public void periodic() {
 		// Check the current state and handle sequence transitions.
-		switch (headState) {
+		switch (stateMachine.getState()) {
 			case IDLE:
 				break;
 
-			case INTAKE:
+			case INTAKING:
 				if (isNoteWithinShootingSensor()) {
 					// Stop intaking
-					transitionToState(HeadState.WAIT);
+					stateMachine.fire(HeadTrigger.INTAKE_DONE);
 				} else if (isNoteWithinAlignmentSensor()) {
 					// Slow down the intake to align the note
 					setIntakeSpeed(IntakeConstants.ALIGMNMENT_SPEED);
 				}
 				break;
 
-			case OUTTAKE:
+			case OUTTAKING:
 				if (!isNoteWithinAlignmentSensor()) {
 					// Stop outtaking
-					transitionToState(HeadState.IDLE);
+					stateMachine.fire(HeadTrigger.OUTTAKE_DONE);
 				}
 				break;
 
 			case WAIT:
 				break;
 
-			case SHOOT:
+			case SHOOTING:
 				if (isReadyToShoot()) {
 					// Shoot a note
 					setIntakeSpeed(IntakeConstants.FEEDER_SPEED);
-					transitionToState(HeadState.SHOOTING);
+
+					stateMachine.fire(HeadTrigger.SHOOTING_STARTED);
 				} else {
 					// TODO: Put in shooter speed logic
 					setShooterSpeed(0);
 				}
 				break;
 
-			case SHOOTING:
+			case SHOOTING_STARTED:
 				if (!isNoteWithinShootingSensor()) {
-					transitionToState(HeadState.IDLE);
+					stateMachine.fire(HeadTrigger.SHOOTING_DONE);
 				}
 				break;
 		}
-	}
-
-	/**
-	 * Transitions to a new state.
-	 *
-	 * @param state
-	 *            The state to transition to.
-	 */
-	private void transitionToState(HeadState state) {
-		try {
-			switch (state) {
-				case IDLE:
-					if (headState == HeadState.WAIT) {
-						throw new InvalidStateTransitionException("Cannot become idle while holding a note.");
-					}
-
-					// Stop the intake
-					setIntakeSpeed(0);
-
-					headState = HeadState.IDLE;
-					break;
-
-				case INTAKE:
-					if (headState != HeadState.IDLE) {
-						throw new InvalidStateTransitionException("Cannot intake when holding a note.");
-					}
-
-					// Start intaking
-					setIntakeSpeed(IntakeConstants.INTAKE_SPEED);
-
-					headState = HeadState.INTAKE;
-					break;
-
-				case OUTTAKE:
-					if (headState != HeadState.WAIT) {
-						throw new InvalidStateTransitionException("Cannot outtake when not holding a note.");
-					}
-
-					// Start outtaking
-					setIntakeSpeed(IntakeConstants.OUTTAKE_SPEED);
-
-					headState = HeadState.OUTTAKE;
-					break;
-
-				case WAIT:
-					if (headState != HeadState.INTAKE) {
-						throw new InvalidStateTransitionException("Cannot wait without intaking a note.");
-					}
-
-					// Stop the intake
-					setIntakeSpeed(0);
-
-					headState = HeadState.WAIT;
-					break;
-
-				case SHOOT:
-					if (headState != HeadState.WAIT) {
-						throw new InvalidStateTransitionException("Cannot shoot when not holding a note.");
-					}
-					headState = HeadState.SHOOT;
-					break;
-
-				case SHOOTING:
-					if (headState != HeadState.SHOOT) {
-						throw new InvalidStateTransitionException("Cannot end shoot sequence without starting.");
-					}
-					headState = HeadState.SHOOTING;
-					break;
-			}
-		} catch (InvalidStateTransitionException e) {
-			System.err.print("Cannot transition to " + state + " from " + headState);
-			if (!e.getMessage().isEmpty()) {
-				System.err.print(": ");
-				System.err.println(e.getMessage());
-			} else {
-				System.err.println();
-			}
-		}
-	}
-
-	/**
-	 * Sets the intake speed.
-	 *
-	 * @param intakeSpeed
-	 *            New intake speed [-1.0,1.0]
-	 */
-	private void setIntakeSpeed(double intakeSpeed) {
-		intakeMotor.set(intakeSpeed);
-	}
-
-	/**
-	 * Starts outtaking.
-	 *
-	 * @return
-	 *         {@link Command} to run
-	 */
-	public Command startOuttakeCommand() {
-		return Commands.runOnce(() -> {
-			setIntakeSpeed(IntakeConstants.OUTTAKE_SPEED);
-		}, this);
-	}
-
-	/**
-	 * Stops the intake.
-	 *
-	 * @return
-	 *         {@link Command} to run
-	 */
-	public Command stopIntakeCommand() {
-		return Commands.runOnce(() -> {
-			setIntakeSpeed(0);
-		}, this);
 	}
 
 	/**
@@ -304,16 +265,8 @@ public class Head extends SubsystemBase {
 	 */
 	public Command intakePieceCommand() {
 		return Commands.runOnce(() -> {
-			setIntakeSpeed(IntakeConstants.INTAKE_SPEED);
-		}, this)
-				.andThen(Commands.waitUntil(() -> isNoteWithinAlignmentSensor()))
-				.andThen(Commands.runOnce(() -> {
-					setIntakeSpeed(IntakeConstants.ALIGMNMENT_SPEED);
-				}))
-				.andThen(Commands.waitUntil(() -> isNoteWithinShootingSensor()))
-				.andThen(() -> {
-					setIntakeSpeed(0);
-				});
+			stateMachine.fire(HeadTrigger.INTAKE);
+		}, this);
 	}
 
 	/**
@@ -324,13 +277,30 @@ public class Head extends SubsystemBase {
 	 */
 	public Command outtakePieceCommand() {
 		return Commands.runOnce(() -> {
-			setIntakeSpeed(IntakeConstants.OUTTAKE_SPEED);
-		}, this)
-				.andThen(Commands.waitUntil(() -> !isNoteWithinShootingSensor()))
-				.andThen(Commands.waitSeconds(3))
-				.finallyDo(() -> {
-					setIntakeSpeed(0);
-				});
+			stateMachine.fire(HeadTrigger.OUTTAKE);
+		}, this);
+	}
+
+	/**
+	 * Shoots.
+	 *
+	 * @return
+	 *         {@link Command} to run
+	 */
+	public Command shootCommand() {
+		return Commands.runOnce(() -> {
+			stateMachine.fire(HeadTrigger.SHOOT);
+		}, this);
+	}
+
+	/**
+	 * Sets the intake speed.
+	 *
+	 * @param intakeSpeed
+	 *            New intake speed [-1.0,1.0]
+	 */
+	private void setIntakeSpeed(double intakeSpeed) {
+		intakeMotor.set(intakeSpeed);
 	}
 
 	/**
@@ -412,25 +382,6 @@ public class Head extends SubsystemBase {
 	 */
 	public boolean isReadyToShoot() {
 		return Math.abs(getShooterSpeed() - shooterSetPoint) < ShooterConstants.VELOCITY_TOLERANCE;
-	}
-
-	/**
-	 * Shoots.
-	 *
-	 * @param stopShooter
-	 *            If true, shooter is spun down after shoot
-	 * @return
-	 *         {@link Command} to run
-	 */
-	public Command shootCommand(boolean stopShooter) {
-		return Commands.waitUntil(() -> isReadyToShoot())
-				.andThen(Commands.runOnce(() -> {
-					setIntakeSpeed(IntakeConstants.FEEDER_SPEED);
-				}))
-				.andThen(Commands.waitUntil(() -> isNoteWithinShootingSensor()))
-				.andThen(Commands.waitUntil(() -> !isNoteWithinShootingSensor()))
-				.andThen(Commands.waitSeconds(0.2))
-				.andThen(Commands.either(spinDownShooterCommand().andThen(() -> setIntakeSpeed(0.0)), Commands.none(), () -> stopShooter));
 	}
 
 	/**
