@@ -111,12 +111,12 @@ public class Vision {
 	public void setTagFilterAlliance(DriverStation.Alliance alliance) {
 		switch (alliance) {
 			case Blue:
-				frontLimelight.settings.withArilTagIdFilter(VisionConstants.BLUE_TAG_ID_FILTER)
+				frontLimelight.settings.withAprilTagIdFilter(VisionConstants.BLUE_TAG_ID_FILTER)
 						.save();
 				break;
 
 			case Red:
-				frontLimelight.settings.withArilTagIdFilter(VisionConstants.RED_TAG_ID_FILTER)
+				frontLimelight.settings.withAprilTagIdFilter(VisionConstants.RED_TAG_ID_FILTER)
 						.save();
 				break;
 		}

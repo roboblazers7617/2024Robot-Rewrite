@@ -266,15 +266,13 @@ public final class Constants {
 		 */
 		public static final ImuMode ENABLED_IMU_MODE = ImuMode.ExternalAssistInternalIMU;
 		/**
-		 * The {@link io.github.roboblazers7617.limelight.LimelightSettings#withArilTagIdFilter(List)} to
-		 * use on the blue alliance.
+		 * The AprilTag IDs to use on the blue alliance.
 		 */
-		public static final List<Double> BLUE_TAG_ID_FILTER = List.of();
+		public static final List<Integer> BLUE_TAG_ID_FILTER = List.of();
 		/**
-		 * The {@link io.github.roboblazers7617.limelight.LimelightSettings#withArilTagIdFilter(List)} to
-		 * use on the Red alliance.
+		 * The AprilTag IDs to use on the Red alliance.
 		 */
-		public static final List<Double> RED_TAG_ID_FILTER = List.of();
+		public static final List<Integer> RED_TAG_ID_FILTER = List.of();
 	}
 
 	/**
