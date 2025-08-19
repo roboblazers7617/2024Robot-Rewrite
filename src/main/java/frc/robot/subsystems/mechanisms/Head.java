@@ -13,6 +13,7 @@ import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.config.SparkBaseConfig;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.SparkClosedLoopController;
+import com.github.oxo42.stateless4j.StateMachine;
 import com.github.oxo42.stateless4j.StateMachineConfig;
 import com.revrobotics.RelativeEncoder;
 
@@ -93,6 +94,9 @@ public class Head extends SubsystemBase {
 		SHOOTING_STARTED,
 	}
 
+	/**
+	 * Triggers for the head's state machine.
+	 */
 	enum HeadTrigger {
 		/**
 		 * Trigger to start shooting.
@@ -124,8 +128,14 @@ public class Head extends SubsystemBase {
 		OUTTAKE_DONE,
 	}
 
+	/**
+	 * The configuration for the state machine.
+	 */
 	private final StateMachineConfig<HeadState, HeadTrigger> stateMachineConfig = new StateMachineConfig<>();
-	private final com.github.oxo42.stateless4j.StateMachine<HeadState, HeadTrigger> stateMachine;
+	/**
+	 * The state machine.
+	 */
+	private final StateMachine<HeadState, HeadTrigger> stateMachine;
 
 	/**
 	 * Shooter setpoint in RPM.
@@ -207,7 +217,7 @@ public class Head extends SubsystemBase {
 				.substateOf(HeadState.SHOOTING)
 				.permit(HeadTrigger.SHOOTING_DONE, HeadState.IDLE);
 
-		stateMachine = new com.github.oxo42.stateless4j.StateMachine<>(HeadState.IDLE, stateMachineConfig);
+		stateMachine = new StateMachine<>(HeadState.IDLE, stateMachineConfig);
 	}
 
 	@Override
