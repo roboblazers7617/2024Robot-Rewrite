@@ -63,15 +63,15 @@ public class Arm extends SubsystemBase {
 
 		// If the elevator target or position is too low for the pivot target, set the pivot higher so the
 		// head can clear the body of the robot
-		boolean elevatorSafe = (elevator.getPosition() < ElevatorConstants.HEAD_CLEAR_POSITION) && (elevator.getTarget() < ElevatorConstants.HEAD_CLEAR_POSITION);
-		if (elevatorSafe && pivot.getTarget() < PivotConstants.SAFE_MIN_POSITION) {
+		boolean elevatorUnsafe = (elevator.getPosition() < ElevatorConstants.HEAD_CLEAR_POSITION) || (elevator.getTarget() < ElevatorConstants.HEAD_CLEAR_POSITION);
+		if (elevatorUnsafe && pivot.getTarget() < PivotConstants.SAFE_MIN_POSITION) {
 			pivot.setTarget(PivotConstants.SAFE_MIN_POSITION);
 		}
 
 		// If the pivot target or position is too low for the elevator target, set the elevator higher so
 		// the head can clear the body of the robot
-		boolean pivotSafe = (pivot.getPosition() < PivotConstants.SAFE_MIN_POSITION) && (pivot.getTarget() < PivotConstants.SAFE_MIN_POSITION);
-		if (pivotSafe && elevator.getTarget() < ElevatorConstants.HEAD_CLEAR_POSITION) {
+		boolean pivotUnsafe = (pivot.getPosition() < PivotConstants.SAFE_MIN_POSITION) || (pivot.getTarget() < PivotConstants.SAFE_MIN_POSITION);
+		if (pivotUnsafe && elevator.getTarget() < ElevatorConstants.HEAD_CLEAR_POSITION) {
 			elevator.setTarget(ElevatorConstants.HEAD_CLEAR_POSITION);
 		}
 	}
