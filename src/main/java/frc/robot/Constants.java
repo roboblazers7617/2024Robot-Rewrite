@@ -471,6 +471,11 @@ public final class Constants {
 		public static final double ZERO_OFFSET = 0.73;
 
 		/**
+		 * Weight of the arm in Kg. Only used for simulation so it doesn't need to be too accurate.
+		 */
+		public static final double ARM_WEIGHT = 40;
+
+		/**
 		 * Current limit in amps.
 		 */
 		public static final int CURRENT_LIMIT = 40;
