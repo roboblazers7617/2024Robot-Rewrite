@@ -1,0 +1,23 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"type": "gradle",
+			"id": "/Users/max/Robotics/2024Robot-RewritespotlessApply2024Robot-Rewrite",
+			"script": "spotlessApply",
+			"description": "Applies code formatting steps to sourcecode in-place.",
+			"group": "verification",
+			"project": "2024Robot-Rewrite",
+			"buildFile": "/Users/max/Robotics/2024Robot-Rewrite/build.gradle",
+			"rootProject": "2024Robot-Rewrite",
+			"projectFolder": "/Users/max/Robotics/2024Robot-Rewrite",
+			"workspaceFolder": "/Users/max/Robotics/2024Robot-Rewrite",
+			"args": "",
+			"javaDebug": false,
+			"problemMatcher": [
+				"$gradle"
+			],
+			"label": "gradle: spotlessApply"
+		}
+	]
+}
