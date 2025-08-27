@@ -104,13 +104,6 @@ public class RobotContainer {
 		if (!LoggingConstants.DEBUG_MODE) {
 			Elastic.selectTab(DashboardConstants.TELEOP_TAB_NAME);
 		}
-		// if (StubbedCommands.EndEffector.isHoldingAlage()) {
-		// gamepieceMode = GamepieceMode.ALGAE_MODE;
-		// }
-
-		// else {
-		// gamepieceMode = GamepieceMode.CORAL_MODE;
-		// }
 
 		// Configure AutoBuilder if not already configured
 		Auto.setupPathPlannerFailsafe(drivetrain);

@@ -3,10 +3,7 @@
   "robotLength": 0.88,
   "holonomicMode": true,
   "pathFolders": [],
-  "autoFolders": [
-    "3 Coral",
-    "Move Off Line"
-  ],
+  "autoFolders": [],
   "defaultMaxVel": 2.75,
   "defaultMaxAccel": 2.75,
   "defaultMaxAngVel": 540.0,

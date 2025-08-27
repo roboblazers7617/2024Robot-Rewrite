@@ -7,13 +7,13 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Corner Start Left to Off Line Left"
+            "pathName": "Example Path"
           }
         }
       ]
     }
   },
   "resetOdom": true,
-  "folder": "Move Off Line",
+  "folder": null,
   "choreoAuto": false
 }
