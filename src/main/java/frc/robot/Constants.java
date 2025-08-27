@@ -46,7 +46,7 @@ public final class Constants {
 		/**
 		 * Maximum speed of the robot in meters per second.
 		 */
-		public static final double MAX_SPEED = FeetPerSecond.of(14.5).in(MetersPerSecond);
+		public static final double MAX_SPEED = FeetPerSecond.of(5).in(MetersPerSecond);
 		/**
 		 * Directory that contains the YAGSL configuration.
 		 */
