@@ -46,11 +46,11 @@ public class Elevator extends SubsystemBase {
 	/**
 	 * The right elevator motor.
 	 */
-	private final SparkMax leaderMotor = new SparkMax(ElevatorConstants.LEFT_MOTOR_ID, MotorType.kBrushless);
+	private final SparkMax leaderMotor = new SparkMax(ElevatorConstants.RIGHT_MOTOR_ID, MotorType.kBrushless);
 	/**
 	 * The left elevator motor.
 	 */
-	private final SparkMax followerMotor = new SparkMax(ElevatorConstants.RIGHT_MOTOR_ID, MotorType.kBrushless);
+	private final SparkMax followerMotor = new SparkMax(ElevatorConstants.LEFT_MOTOR_ID, MotorType.kBrushless);
 
 	/**
 	 * The {@link #leaderMotor}'s encoder.

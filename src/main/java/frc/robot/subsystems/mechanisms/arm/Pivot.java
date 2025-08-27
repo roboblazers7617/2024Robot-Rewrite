@@ -39,9 +39,13 @@ public class Pivot extends SubsystemBase {
 	 */
 	private final ArmFeedforward feedforward = new ArmFeedforward(PivotConstants.KS, PivotConstants.KG, PivotConstants.KV);
 	/**
-	 * The pivot motor.
+	 * The left pivot motor.
 	 */
-	private final SparkMax motor = new SparkMax(PivotConstants.MOTOR_ID, MotorType.kBrushless);
+	private final SparkMax leaderMotor = new SparkMax(PivotConstants.LEFT_MOTOR_ID, MotorType.kBrushless);
+	/**
+	 * The right pivot motor.
+	 */
+	private final SparkMax followerMotor = new SparkMax(PivotConstants.RIGHT_MOTOR_ID, MotorType.kBrushless);
 	/**
 	 * The absolute encoder on the pivot.
 	 */
@@ -74,16 +78,12 @@ public class Pivot extends SubsystemBase {
 		motorConfig.inverted(true);
 
 		motorConfig.absoluteEncoder
-				.positionConversionFactor(360.0)
-				.velocityConversionFactor(360 * 60)
+				.positionConversionFactor(PivotConstants.POSITION_CONVERSION_FACTOR)
+				.velocityConversionFactor(PivotConstants.VELOCITY_CONVERSION_FACTOR)
 				.zeroOffset(PivotConstants.ZERO_OFFSET)
 				.inverted(true)
 				.zeroCentered(true);
-		absoluteEncoder = motor.getAbsoluteEncoder();
-
-		motorConfig.encoder
-				.positionConversionFactor(PivotConstants.POSITION_CONVERSION_FACTOR)
-				.velocityConversionFactor(PivotConstants.VELOCITY_CONVERSION_FACTOR);
+		absoluteEncoder = leaderMotor.getAbsoluteEncoder();
 
 		motorConfig.closedLoop
 				.p(PivotConstants.KP)
@@ -92,7 +92,12 @@ public class Pivot extends SubsystemBase {
 				.outputRange(PivotConstants.KMIN_OUTPUT, PivotConstants.KMAX_OUTPUT)
 				.feedbackSensor(FeedbackSensor.kAbsoluteEncoder);
 
-		motor.configure(motorConfig, SparkBase.ResetMode.kResetSafeParameters, SparkBase.PersistMode.kPersistParameters);
+		leaderMotor.configure(motorConfig, SparkBase.ResetMode.kResetSafeParameters, SparkBase.PersistMode.kPersistParameters);
+
+		SparkBaseConfig followerMotorConfig = new SparkMaxConfig()
+				.apply(motorConfig)
+				.follow(leaderMotor, true);
+		followerMotor.configure(followerMotorConfig, SparkBase.ResetMode.kResetSafeParameters, SparkBase.PersistMode.kPersistParameters);
 
 		// Enable brake mode on robot enable
 		RobotModeTriggers.disabled()
@@ -123,7 +128,7 @@ public class Pivot extends SubsystemBase {
 		// Calculate a feedforward for the motor to keep the pivot up
 		double feedForwardValue = feedforward.calculate(Math.toRadians(currentSetpoint.position), Math.toRadians(currentSetpoint.velocity));
 
-		motor.getClosedLoopController()
+		leaderMotor.getClosedLoopController()
 				.setReference(currentSetpoint.position, ControlType.kPosition, ClosedLoopSlot.kSlot0, feedForwardValue, ArbFFUnits.kVoltage);
 	}
 
@@ -239,12 +244,13 @@ public class Pivot extends SubsystemBase {
 	public Command toggleBrakeModeCommand() {
 		return this.runOnce(() -> {
 			SparkBaseConfig newPivotConfig = new SparkMaxConfig();
-			if (motor.configAccessor.getIdleMode() == IdleMode.kBrake) {
+			if (leaderMotor.configAccessor.getIdleMode() == IdleMode.kBrake) {
 				newPivotConfig.idleMode(IdleMode.kCoast);
 			} else {
 				newPivotConfig.idleMode(IdleMode.kBrake);
 			}
-			motor.configure(newPivotConfig, SparkBase.ResetMode.kNoResetSafeParameters, SparkBase.PersistMode.kNoPersistParameters);
+			leaderMotor.configure(newPivotConfig, SparkBase.ResetMode.kNoResetSafeParameters, SparkBase.PersistMode.kNoPersistParameters);
+			followerMotor.configure(newPivotConfig, SparkBase.ResetMode.kNoResetSafeParameters, SparkBase.PersistMode.kNoPersistParameters);
 		}).ignoringDisable(true);
 	}
 
@@ -259,7 +265,8 @@ public class Pivot extends SubsystemBase {
 		return this.runOnce(() -> {
 			SparkBaseConfig newPivotConfig = new SparkMaxConfig()
 					.idleMode(IdleMode.kBrake);
-			motor.configure(newPivotConfig, SparkBase.ResetMode.kNoResetSafeParameters, SparkBase.PersistMode.kNoPersistParameters);
+			leaderMotor.configure(newPivotConfig, SparkBase.ResetMode.kNoResetSafeParameters, SparkBase.PersistMode.kNoPersistParameters);
+			followerMotor.configure(newPivotConfig, SparkBase.ResetMode.kNoResetSafeParameters, SparkBase.PersistMode.kNoPersistParameters);
 		}).ignoringDisable(true);
 	}
 }

@@ -1,5 +1,6 @@
 package frc.robot.subsystems.mechanisms.arm;
 
+import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -11,6 +12,7 @@ import frc.robot.Constants.PivotConstants;
  * A superstructure to control both the Elevator and Pivot. Includes some important safety stuff so
  * this shouldn't be skipped.
  */
+@Logged
 public class Arm extends SubsystemBase {
 	/**
 	 * The Elevator component of the Arm.

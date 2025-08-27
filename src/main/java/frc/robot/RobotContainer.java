@@ -13,7 +13,7 @@ import frc.robot.subsystems.drivetrain.Drivetrain;
 import frc.robot.subsystems.drivetrain.DrivetrainControls;
 import frc.robot.subsystems.drivetrain.Drivetrain.TranslationOrientation;
 // import frc.robot.subsystems.mechanisms.Head;
-// import frc.robot.subsystems.mechanisms.arm.Arm;
+import frc.robot.subsystems.mechanisms.arm.Arm;
 import frc.robot.subsystems.Auto;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -46,7 +46,7 @@ public class RobotContainer {
 	private final Drivetrain drivetrain = new Drivetrain(DrivetrainConstants.CONFIG_DIR);
 	@NotLogged
 	private final DrivetrainControls drivetrainControls = new DrivetrainControls(drivetrain);
-	// private final Arm arm = new Arm();
+	private final Arm arm = new Arm();
 	// private final Head head = new Head();
 
 	/**
@@ -77,7 +77,7 @@ public class RobotContainer {
 	 * This method is run when enabling into any mode.
 	 */
 	public void init() {
-		// arm.init();
+		arm.init();
 	}
 
 	/**

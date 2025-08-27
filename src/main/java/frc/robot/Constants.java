@@ -10,6 +10,7 @@ import static edu.wpi.first.units.Units.FeetPerSecond;
 import static edu.wpi.first.units.Units.Meters;
 import static edu.wpi.first.units.Units.MetersPerSecond;
 import static edu.wpi.first.units.Units.MetersPerSecondPerSecond;
+import static edu.wpi.first.units.Units.Rotations;
 
 import java.io.File;
 import java.util.List;
@@ -289,21 +290,20 @@ public final class Constants {
 	 * Constants used to configure the {@link frc.robot.subsystems.mechanisms.arm.Elevator}.
 	 */
 	public static class ElevatorConstants {
-		// TODO: Update CAN IDs
 		/**
 		 * CAN ID for the right elevator motor.
 		 */
-		public static final int RIGHT_MOTOR_ID = 22;
+		public static final int RIGHT_MOTOR_ID = 28;
 		/**
 		 * CAN ID for the left elevator motor.
 		 */
-		public static final int LEFT_MOTOR_ID = 53;
+		public static final int LEFT_MOTOR_ID = 27;
 
 		// TODO: Tune PID constants
 		/**
 		 * Elevator kP.
 		 */
-		public static final double KP = 1.35;
+		public static final double KP = 0.0;
 		/**
 		 * Elevator kI.
 		 */
@@ -311,28 +311,28 @@ public final class Constants {
 		/**
 		 * Elevator kD.
 		 */
-		public static final double KD = 1.0;
+		public static final double KD = 0.0;
 		/**
 		 * Elevator kS.
 		 */
-		public static final double KS = 0.35;
+		public static final double KS = 0.0;
 		/**
 		 * Elevator kG.
 		 */
-		public static final double KG = 0.25; // 0.14
+		public static final double KG = 0.0; // 0.14
 		/**
 		 * Elevator kV.
 		 */
-		public static final double KV = 6.5;// 6.9
+		public static final double KV = 0.0;// 6.9
 
 		/**
 		 * Elevator kMinOutput as a percentage.
 		 */
-		public static final double KMIN_OUTPUT = -1.0;
+		public static final double KMIN_OUTPUT = 0.0;
 		/**
 		 * Elevator kMaxOutput as a percentage.
 		 */
-		public static final double KMAX_OUTPUT = 1.0;
+		public static final double KMAX_OUTPUT = 0.0;
 		/**
 		 * Maximum velocity in m/s.
 		 */
@@ -387,16 +387,19 @@ public final class Constants {
 	 */
 	public static class PivotConstants {
 		/**
-		 * Motor CAN ID.
+		 * Left motor CAN ID.
 		 */
-		// TODO: Update
-		public static final int MOTOR_ID = 31;
+		public static final int LEFT_MOTOR_ID = 26;
+		/**
+		 * Right motor CAN ID.
+		 */
+		public static final int RIGHT_MOTOR_ID = 25;
 
 		// TODO: Tune PID constants
 		/**
 		 * Pivot kP.
 		 */
-		public static final double KP = 0.01; // 0.006
+		public static final double KP = 0.0;
 		/**
 		 * Pivot kI.
 		 */
@@ -409,11 +412,11 @@ public final class Constants {
 		/**
 		 * Pivot kS.
 		 */
-		public static final double KS = 0.1;// 0.1
+		public static final double KS = 0.0;
 		/**
 		 * Pivot kG.
 		 */
-		public static final double KG = 0.3;
+		public static final double KG = 0.0;
 		/**
 		 * Pivot kV.
 		 */
@@ -422,11 +425,11 @@ public final class Constants {
 		/**
 		 * Pivot kMinOutput.
 		 */
-		public static final double KMIN_OUTPUT = -.5;
+		public static final double KMIN_OUTPUT = 0.0;
 		/**
 		 * Pivot kMaxOutput.
 		 */
-		public static final double KMAX_OUTPUT = .5;
+		public static final double KMAX_OUTPUT = 0.0;
 		/**
 		 * Maximum velocity in degrees/s.
 		 */
@@ -441,25 +444,21 @@ public final class Constants {
 		/**
 		 * Maximum position in degrees.
 		 */
-		// TODO: Update
-		public static final double MAX_POSITION = 145.0;
+		public static final double MAX_POSITION = 90.0;
 		/**
 		 * Minimum position when the elevator is not lowered, in degrees.
 		 */
-		// TODO: Update
-		public static final double MIN_POSITION = -50.0;
+		public static final double MIN_POSITION = 2.5;
 		/**
 		 * Minimum safe position while the elevator is below {@link ElevatorConstants#HEAD_CLEAR_POSITION},
 		 * in degrees.
 		 */
-		// TODO: Update
-		public static final double SAFE_MIN_POSITION = -40.0;
+		public static final double SAFE_MIN_POSITION = 18.5;
 
 		/**
 		 * Conversion factor from rotation to degrees.
 		 */
-		// TODO: Update
-		public static final double POSITION_CONVERSION_FACTOR = 1.0 / ((10.0 / 58.0) * (18.0 / 58.0) * (30.0 / 12.0)); // first two conversions are gear boxes, third one is chain
+		public static final double POSITION_CONVERSION_FACTOR = 360;
 		/**
 		 * Conversion factor from rotation to degrees per second.
 		 */
@@ -467,8 +466,7 @@ public final class Constants {
 		/**
 		 * Zero offset, in rotations, because reasons.
 		 */
-		// TODO: Update
-		public static final double ZERO_OFFSET = 0.73;
+		public static final double ZERO_OFFSET = Degrees.of(124.5).in(Rotations);
 
 		/**
 		 * Current limit in amps.
